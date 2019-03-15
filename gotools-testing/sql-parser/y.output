@@ -1,0 +1,9087 @@
+
+state 0
+	$accept: .stmt_list $end 
+
+	CREATE  shift 16
+	DELETE  shift 12
+	INSERT  shift 13
+	REPLACE  shift 14
+	SELECT  shift 11
+	SET  shift 17
+	UPDATE  shift 15
+	.  error
+
+	stmt_list  goto 1
+	stmt  goto 2
+	select_stmt  goto 3
+	delete_stmt  goto 4
+	insert_stmt  goto 5
+	replace_stmt  goto 6
+	update_stmt  goto 7
+	create_database_stmt  goto 8
+	create_table_stmt  goto 9
+	set_stmt  goto 10
+
+state 1
+	$accept:  stmt_list.$end 
+	stmt_list:  stmt_list.stmt ';' 
+
+	$end  accept
+	CREATE  shift 16
+	DELETE  shift 12
+	INSERT  shift 13
+	REPLACE  shift 14
+	SELECT  shift 11
+	SET  shift 17
+	UPDATE  shift 15
+	.  error
+
+	stmt  goto 18
+	select_stmt  goto 3
+	delete_stmt  goto 4
+	insert_stmt  goto 5
+	replace_stmt  goto 6
+	update_stmt  goto 7
+	create_database_stmt  goto 8
+	create_table_stmt  goto 9
+	set_stmt  goto 10
+
+state 2
+	stmt_list:  stmt.';' 
+
+	';'  shift 19
+	.  error
+
+
+state 3
+	stmt:  select_stmt.    (3)
+
+	.  reduce 3 (src line 310)
+
+
+state 4
+	stmt:  delete_stmt.    (82)
+
+	.  reduce 82 (src line 465)
+
+
+state 5
+	stmt:  insert_stmt.    (94)
+
+	.  reduce 94 (src line 499)
+
+
+state 6
+	stmt:  replace_stmt.    (119)
+
+	.  reduce 119 (src line 563)
+
+
+state 7
+	stmt:  update_stmt.    (123)
+
+	.  reduce 123 (src line 584)
+
+
+state 8
+	stmt:  create_database_stmt.    (132)
+
+	.  reduce 132 (src line 617)
+
+
+state 9
+	stmt:  create_table_stmt.    (137)
+
+	.  reduce 137 (src line 631)
+
+
+state 10
+	stmt:  set_stmt.    (215)
+
+	.  reduce 215 (src line 762)
+
+
+state 11
+	select_stmt:  SELECT.select_opts select_expr_list 
+	select_stmt:  SELECT.select_opts select_expr_list FROM table_references opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+	select_opts: .    (28)
+
+	.  reduce 28 (src line 361)
+
+	select_opts  goto 20
+
+state 12
+	delete_stmt:  DELETE.delete_opts FROM NAME opt_where opt_orderby opt_limit 
+	delete_stmt:  DELETE.delete_opts delete_list FROM table_references opt_where 
+	delete_stmt:  DELETE.delete_opts FROM delete_list USING table_references opt_where 
+	delete_opts: .    (87)
+
+	.  reduce 87 (src line 476)
+
+	delete_opts  goto 21
+
+state 13
+	insert_stmt:  INSERT.insert_opts opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	insert_stmt:  INSERT.insert_opts opt_into NAME SET insert_asgn_list opt_ondupupdate 
+	insert_stmt:  INSERT.insert_opts opt_into NAME opt_col_names select_stmt opt_ondupupdate 
+	insert_opts: .    (98)
+
+	.  reduce 98 (src line 512)
+
+	insert_opts  goto 22
+
+state 14
+	replace_stmt:  REPLACE.insert_opts opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	replace_stmt:  REPLACE.insert_opts opt_into NAME SET insert_asgn_list opt_ondupupdate 
+	replace_stmt:  REPLACE.insert_opts opt_into NAME opt_col_names select_stmt opt_ondupupdate 
+	insert_opts: .    (98)
+
+	.  reduce 98 (src line 512)
+
+	insert_opts  goto 23
+
+state 15
+	update_stmt:  UPDATE.update_opts table_references SET update_asgn_list opt_where opt_orderby opt_limit 
+	update_opts: .    (125)
+	insert_opts: .    (98)
+
+	NAME  reduce 125 (src line 594)
+	'('  reduce 125 (src line 594)
+	.  reduce 98 (src line 512)
+
+	insert_opts  goto 25
+	update_opts  goto 24
+
+state 16
+	create_database_stmt:  CREATE.DATABASE opt_if_not_exists NAME 
+	create_database_stmt:  CREATE.SCHEMA opt_if_not_exists NAME 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME create_select_statement 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE.opt_temporary TABLE opt_if_not_exists NAME '.' NAME create_select_statement 
+	opt_temporary: .    (213)
+
+	DATABASE  shift 26
+	SCHEMA  shift 27
+	TEMPORARY  shift 29
+	.  reduce 213 (src line 756)
+
+	opt_temporary  goto 28
+
+state 17
+	set_stmt:  SET.set_list 
+
+	USERVAR  shift 32
+	.  error
+
+	set_list  goto 30
+	set_expr  goto 31
+
+state 18
+	stmt_list:  stmt_list stmt.';' 
+
+	';'  shift 33
+	.  error
+
+
+state 19
+	stmt_list:  stmt ';'.    (1)
+
+	.  reduce 1 (src line 304)
+
+
+state 20
+	select_stmt:  SELECT select_opts.select_expr_list 
+	select_stmt:  SELECT select_opts.select_expr_list FROM table_references opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+	select_opts:  select_opts.ALL 
+	select_opts:  select_opts.DISTINCT 
+	select_opts:  select_opts.DISTINCTROW 
+	select_opts:  select_opts.HIGH_PRIORITY 
+	select_opts:  select_opts.STRAIGHT_JOIN 
+	select_opts:  select_opts.SQL_SMALL_RESULT 
+	select_opts:  select_opts.SQL_BIG_RESULT 
+	select_opts:  select_opts.SQL_CALC_FOUND_ROWS 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	'*'  shift 44
+	ALL  shift 35
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DISTINCT  shift 36
+	DISTINCTROW  shift 37
+	EXISTS  shift 55
+	HIGH_PRIORITY  shift 38
+	SQL_BIG_RESULT  shift 41
+	SQL_CALC_FOUND_ROWS  shift 42
+	SQL_SMALL_RESULT  shift 40
+	STRAIGHT_JOIN  shift 39
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	select_expr_list  goto 34
+	expr  goto 45
+	select_expr  goto 43
+
+state 21
+	delete_stmt:  DELETE delete_opts.FROM NAME opt_where opt_orderby opt_limit 
+	delete_opts:  delete_opts.LOW_PRIORITY 
+	delete_opts:  delete_opts.QUICK 
+	delete_opts:  delete_opts.IGNORE 
+	delete_stmt:  DELETE delete_opts.delete_list FROM table_references opt_where 
+	delete_stmt:  DELETE delete_opts.FROM delete_list USING table_references opt_where 
+
+	NAME  shift 71
+	FROM  shift 66
+	IGNORE  shift 69
+	LOW_PRIORITY  shift 67
+	QUICK  shift 68
+	.  error
+
+	delete_list  goto 70
+
+state 22
+	insert_stmt:  INSERT insert_opts.opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	insert_opts:  insert_opts.LOW_PRIORITY 
+	insert_opts:  insert_opts.DELAYED 
+	insert_opts:  insert_opts.HIGH_PRIORITY 
+	insert_opts:  insert_opts.IGNORE 
+	insert_stmt:  INSERT insert_opts.opt_into NAME SET insert_asgn_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts.opt_into NAME opt_col_names select_stmt opt_ondupupdate 
+	opt_into: .    (104)
+
+	DELAYED  shift 74
+	HIGH_PRIORITY  shift 75
+	IGNORE  shift 76
+	INTO  shift 77
+	LOW_PRIORITY  shift 73
+	.  reduce 104 (src line 519)
+
+	opt_into  goto 72
+
+state 23
+	insert_opts:  insert_opts.LOW_PRIORITY 
+	insert_opts:  insert_opts.DELAYED 
+	insert_opts:  insert_opts.HIGH_PRIORITY 
+	insert_opts:  insert_opts.IGNORE 
+	replace_stmt:  REPLACE insert_opts.opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts.opt_into NAME SET insert_asgn_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts.opt_into NAME opt_col_names select_stmt opt_ondupupdate 
+	opt_into: .    (104)
+
+	DELAYED  shift 74
+	HIGH_PRIORITY  shift 75
+	IGNORE  shift 76
+	INTO  shift 77
+	LOW_PRIORITY  shift 73
+	.  reduce 104 (src line 519)
+
+	opt_into  goto 78
+
+state 24
+	update_stmt:  UPDATE update_opts.table_references SET update_asgn_list opt_where opt_orderby opt_limit 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_references  goto 79
+	table_reference  goto 80
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 25
+	insert_opts:  insert_opts.LOW_PRIORITY 
+	insert_opts:  insert_opts.DELAYED 
+	insert_opts:  insert_opts.HIGH_PRIORITY 
+	insert_opts:  insert_opts.IGNORE 
+	update_opts:  insert_opts.LOW_PRIORITY 
+	update_opts:  insert_opts.IGNORE 
+
+	DELAYED  shift 74
+	HIGH_PRIORITY  shift 75
+	IGNORE  shift 87
+	LOW_PRIORITY  shift 86
+	.  error
+
+
+state 26
+	create_database_stmt:  CREATE DATABASE.opt_if_not_exists NAME 
+	opt_if_not_exists: .    (135)
+
+	IF  shift 89
+	.  reduce 135 (src line 625)
+
+	opt_if_not_exists  goto 88
+
+state 27
+	create_database_stmt:  CREATE SCHEMA.opt_if_not_exists NAME 
+	opt_if_not_exists: .    (135)
+
+	IF  shift 89
+	.  reduce 135 (src line 625)
+
+	opt_if_not_exists  goto 90
+
+state 28
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME create_select_statement 
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary.TABLE opt_if_not_exists NAME '.' NAME create_select_statement 
+
+	TABLE  shift 91
+	.  error
+
+
+state 29
+	opt_temporary:  TEMPORARY.    (214)
+
+	.  reduce 214 (src line 757)
+
+
+state 30
+	set_stmt:  SET set_list.    (216)
+	set_list:  set_list.',' set_expr 
+
+	','  shift 92
+	.  reduce 216 (src line 765)
+
+
+state 31
+	set_list:  set_expr.    (217)
+
+	.  reduce 217 (src line 767)
+
+
+state 32
+	set_expr:  USERVAR.COMPARISON expr 
+	set_expr:  USERVAR.ASSIGN expr 
+
+	ASSIGN  shift 94
+	COMPARISON  shift 93
+	.  error
+
+
+state 33
+	stmt_list:  stmt_list stmt ';'.    (2)
+
+	.  reduce 2 (src line 305)
+
+
+state 34
+	select_stmt:  SELECT select_opts select_expr_list.    (4)
+	select_stmt:  SELECT select_opts select_expr_list.FROM table_references opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+	select_expr_list:  select_expr_list.',' select_expr 
+
+	FROM  shift 95
+	','  shift 96
+	.  reduce 4 (src line 313)
+
+
+state 35
+	select_opts:  select_opts ALL.    (29)
+
+	.  reduce 29 (src line 362)
+
+
+state 36
+	select_opts:  select_opts DISTINCT.    (30)
+
+	.  reduce 30 (src line 363)
+
+
+state 37
+	select_opts:  select_opts DISTINCTROW.    (31)
+
+	.  reduce 31 (src line 364)
+
+
+state 38
+	select_opts:  select_opts HIGH_PRIORITY.    (32)
+
+	.  reduce 32 (src line 365)
+
+
+state 39
+	select_opts:  select_opts STRAIGHT_JOIN.    (33)
+
+	.  reduce 33 (src line 366)
+
+
+state 40
+	select_opts:  select_opts SQL_SMALL_RESULT.    (34)
+
+	.  reduce 34 (src line 367)
+
+
+state 41
+	select_opts:  select_opts SQL_BIG_RESULT.    (35)
+
+	.  reduce 35 (src line 368)
+
+
+state 42
+	select_opts:  select_opts SQL_CALC_FOUND_ROWS.    (36)
+
+	.  reduce 36 (src line 369)
+
+
+state 43
+	select_expr_list:  select_expr.    (37)
+
+	.  reduce 37 (src line 372)
+
+
+state 44
+	select_expr_list:  '*'.    (39)
+
+	.  reduce 39 (src line 374)
+
+
+state 45
+	select_expr:  expr.opt_as_alias 
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+	opt_as_alias: .    (53)
+
+	NAME  shift 119
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	AS  shift 118
+	.  reduce 53 (src line 401)
+
+	opt_as_alias  goto 97
+
+state 46
+	expr:  NAME.    (221)
+	expr:  NAME.'.' NAME 
+	expr:  NAME.'(' opt_val_list ')' 
+
+	'.'  shift 120
+	'('  shift 121
+	.  reduce 221 (src line 777)
+
+
+state 47
+	expr:  USERVAR.    (222)
+	expr:  USERVAR.ASSIGN expr 
+
+	ASSIGN  shift 122
+	.  reduce 222 (src line 778)
+
+
+state 48
+	expr:  STRING.    (224)
+
+	.  reduce 224 (src line 780)
+
+
+state 49
+	expr:  INTNUM.    (225)
+
+	.  reduce 225 (src line 781)
+
+
+state 50
+	expr:  APPROXNUM.    (226)
+
+	.  reduce 226 (src line 782)
+
+
+state 51
+	expr:  BOOL.    (227)
+
+	.  reduce 227 (src line 783)
+
+
+state 52
+	expr:  '-'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 123
+
+state 53
+	expr:  NOT.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 124
+
+state 54
+	expr:  '!'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 125
+
+state 55
+	expr:  EXISTS.'(' select_stmt ')' 
+
+	'('  shift 126
+	.  error
+
+
+state 56
+	expr:  FCOUNT.'(' '*' ')' 
+	expr:  FCOUNT.'(' expr ')' 
+
+	'('  shift 127
+	.  error
+
+
+state 57
+	expr:  FSUBSTRING.'(' val_list ')' 
+	expr:  FSUBSTRING.'(' expr FROM expr ')' 
+	expr:  FSUBSTRING.'(' expr FROM expr FOR expr ')' 
+
+	'('  shift 128
+	.  error
+
+
+state 58
+	expr:  FTRIM.'(' val_list ')' 
+	expr:  FTRIM.'(' trim_ltb expr FROM val_list ')' 
+
+	'('  shift 129
+	.  error
+
+
+state 59
+	expr:  FDATE_ADD.'(' expr ',' interval_exp ')' 
+
+	'('  shift 130
+	.  error
+
+
+state 60
+	expr:  FDATE_SUB.'(' expr ',' interval_exp ')' 
+
+	'('  shift 131
+	.  error
+
+
+state 61
+	expr:  CASE.expr case_list END 
+	expr:  CASE.expr case_list ELSE expr END 
+	expr:  CASE.case_list END 
+	expr:  CASE.case_list ELSE expr END 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	WHEN  shift 134
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	case_list  goto 133
+	expr  goto 132
+
+state 62
+	expr:  CURRENT_TIMESTAMP.    (296)
+
+	.  reduce 296 (src line 887)
+
+
+state 63
+	expr:  CURRENT_DATE.    (297)
+
+	.  reduce 297 (src line 888)
+
+
+state 64
+	expr:  CURRENT_TIME.    (298)
+
+	.  reduce 298 (src line 889)
+
+
+state 65
+	expr:  BINARY.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 135
+
+state 66
+	delete_stmt:  DELETE delete_opts FROM.NAME opt_where opt_orderby opt_limit 
+	delete_stmt:  DELETE delete_opts FROM.delete_list USING table_references opt_where 
+
+	NAME  shift 136
+	.  error
+
+	delete_list  goto 137
+
+state 67
+	delete_opts:  delete_opts LOW_PRIORITY.    (84)
+
+	.  reduce 84 (src line 473)
+
+
+state 68
+	delete_opts:  delete_opts QUICK.    (85)
+
+	.  reduce 85 (src line 474)
+
+
+state 69
+	delete_opts:  delete_opts IGNORE.    (86)
+
+	.  reduce 86 (src line 475)
+
+
+state 70
+	delete_stmt:  DELETE delete_opts delete_list.FROM table_references opt_where 
+	delete_list:  delete_list.',' NAME opt_dot_star 
+
+	FROM  shift 138
+	','  shift 139
+	.  error
+
+
+state 71
+	delete_list:  NAME.opt_dot_star 
+	opt_dot_star: .    (91)
+
+	'.'  shift 141
+	.  reduce 91 (src line 489)
+
+	opt_dot_star  goto 140
+
+state 72
+	insert_stmt:  INSERT insert_opts opt_into.NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts opt_into.NAME SET insert_asgn_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts opt_into.NAME opt_col_names select_stmt opt_ondupupdate 
+
+	NAME  shift 142
+	.  error
+
+
+state 73
+	insert_opts:  insert_opts LOW_PRIORITY.    (99)
+
+	.  reduce 99 (src line 513)
+
+
+state 74
+	insert_opts:  insert_opts DELAYED.    (100)
+
+	.  reduce 100 (src line 514)
+
+
+state 75
+	insert_opts:  insert_opts HIGH_PRIORITY.    (101)
+
+	.  reduce 101 (src line 515)
+
+
+state 76
+	insert_opts:  insert_opts IGNORE.    (102)
+
+	.  reduce 102 (src line 516)
+
+
+state 77
+	opt_into:  INTO.    (103)
+
+	.  reduce 103 (src line 519)
+
+
+state 78
+	replace_stmt:  REPLACE insert_opts opt_into.NAME opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts opt_into.NAME SET insert_asgn_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts opt_into.NAME opt_col_names select_stmt opt_ondupupdate 
+
+	NAME  shift 143
+	.  error
+
+
+state 79
+	table_references:  table_references.',' table_reference 
+	update_stmt:  UPDATE update_opts table_references.SET update_asgn_list opt_where opt_orderby opt_limit 
+
+	SET  shift 145
+	','  shift 144
+	.  error
+
+
+state 80
+	table_references:  table_reference.    (41)
+	join_table:  table_reference.opt_inner_cross JOIN table_factor opt_join_condition 
+	join_table:  table_reference.STRAIGHT_JOIN table_factor 
+	join_table:  table_reference.STRAIGHT_JOIN table_factor ON expr 
+	join_table:  table_reference.left_or_right opt_outer JOIN table_factor join_condition 
+	join_table:  table_reference.NATURAL opt_left_or_right_outer JOIN table_factor 
+	opt_inner_cross: .    (59)
+
+	CROSS  shift 151
+	INNER  shift 150
+	JOIN  reduce 59 (src line 417)
+	LEFT  shift 152
+	NATURAL  shift 149
+	RIGHT  shift 153
+	STRAIGHT_JOIN  shift 147
+	.  reduce 41 (src line 379)
+
+	opt_inner_cross  goto 146
+	left_or_right  goto 148
+
+state 81
+	table_reference:  table_factor.    (43)
+
+	.  reduce 43 (src line 383)
+
+
+state 82
+	table_reference:  join_table.    (44)
+
+	.  reduce 44 (src line 384)
+
+
+state 83
+	table_factor:  NAME.opt_as_alias index_hint 
+	table_factor:  NAME.'.' NAME opt_as_alias index_hint 
+	opt_as_alias: .    (53)
+
+	NAME  shift 119
+	AS  shift 118
+	'.'  shift 155
+	.  reduce 53 (src line 401)
+
+	opt_as_alias  goto 154
+
+state 84
+	table_factor:  table_subquery.opt_as NAME 
+	opt_as: .    (50)
+
+	AS  shift 157
+	.  reduce 50 (src line 396)
+
+	opt_as  goto 156
+
+state 85
+	table_factor:  '('.table_references ')' 
+	table_subquery:  '('.select_stmt ')' 
+
+	NAME  shift 83
+	SELECT  shift 11
+	'('  shift 85
+	.  error
+
+	table_references  goto 158
+	select_stmt  goto 159
+	table_reference  goto 80
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 86
+	insert_opts:  insert_opts LOW_PRIORITY.    (99)
+	update_opts:  insert_opts LOW_PRIORITY.    (126)
+
+	NAME  reduce 126 (src line 595)
+	'('  reduce 126 (src line 595)
+	.  reduce 99 (src line 513)
+
+
+state 87
+	insert_opts:  insert_opts IGNORE.    (102)
+	update_opts:  insert_opts IGNORE.    (127)
+
+	NAME  reduce 127 (src line 596)
+	'('  reduce 127 (src line 596)
+	.  reduce 102 (src line 516)
+
+
+state 88
+	create_database_stmt:  CREATE DATABASE opt_if_not_exists.NAME 
+
+	NAME  shift 160
+	.  error
+
+
+state 89
+	opt_if_not_exists:  IF.EXISTS 
+
+	EXISTS  shift 161
+	.  error
+
+
+state 90
+	create_database_stmt:  CREATE SCHEMA opt_if_not_exists.NAME 
+
+	NAME  shift 162
+	.  error
+
+
+state 91
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME '.' NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME '.' NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE.opt_if_not_exists NAME '.' NAME create_select_statement 
+	opt_if_not_exists: .    (135)
+
+	IF  shift 89
+	.  reduce 135 (src line 625)
+
+	opt_if_not_exists  goto 163
+
+state 92
+	set_list:  set_list ','.set_expr 
+
+	USERVAR  shift 32
+	.  error
+
+	set_expr  goto 164
+
+state 93
+	set_expr:  USERVAR COMPARISON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 165
+
+state 94
+	set_expr:  USERVAR ASSIGN.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 166
+
+state 95
+	select_stmt:  SELECT select_opts select_expr_list FROM.table_references opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_references  goto 167
+	table_reference  goto 80
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 96
+	select_expr_list:  select_expr_list ','.select_expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 45
+	select_expr  goto 168
+
+state 97
+	select_expr:  expr opt_as_alias.    (40)
+
+	.  reduce 40 (src line 377)
+
+
+state 98
+	expr:  expr '+'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 169
+
+state 99
+	expr:  expr '-'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 170
+
+state 100
+	expr:  expr '*'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 171
+
+state 101
+	expr:  expr '/'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 172
+
+state 102
+	expr:  expr '%'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 173
+
+state 103
+	expr:  expr MOD.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 174
+
+state 104
+	expr:  expr ANDOP.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 175
+
+state 105
+	expr:  expr OR.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 176
+
+state 106
+	expr:  expr XOR.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 177
+
+state 107
+	expr:  expr COMPARISON.expr 
+	expr:  expr COMPARISON.'(' select_stmt ')' 
+	expr:  expr COMPARISON.ANY '(' select_stmt ')' 
+	expr:  expr COMPARISON.SOME '(' select_stmt ')' 
+	expr:  expr COMPARISON.ALL '(' select_stmt ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	ALL  shift 182
+	ANY  shift 180
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	SOME  shift 181
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	'('  shift 179
+	.  error
+
+	expr  goto 178
+
+state 108
+	expr:  expr '|'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 183
+
+state 109
+	expr:  expr '&'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 184
+
+state 110
+	expr:  expr '^'.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 185
+
+state 111
+	expr:  expr SHIFT.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 186
+
+state 112
+	expr:  expr IS.NULLX 
+	expr:  expr IS.NOT NULLX 
+	expr:  expr IS.BOOL 
+	expr:  expr IS.NOT BOOL 
+
+	BOOL  shift 189
+	NOT  shift 188
+	NULLX  shift 187
+	.  error
+
+
+state 113
+	expr:  expr BETWEEN.expr AND expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 190
+
+state 114
+	expr:  expr IN.'(' val_list ')' 
+	expr:  expr IN.'(' select_stmt ')' 
+
+	'('  shift 191
+	.  error
+
+
+state 115
+	expr:  expr NOT.IN '(' val_list ')' 
+	expr:  expr NOT.IN '(' select_stmt ')' 
+	expr:  expr NOT.LIKE expr 
+	expr:  expr NOT.REGEXP expr 
+
+	IN  shift 192
+	LIKE  shift 193
+	REGEXP  shift 194
+	.  error
+
+
+state 116
+	expr:  expr LIKE.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 195
+
+state 117
+	expr:  expr REGEXP.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 196
+
+state 118
+	opt_as_alias:  AS.NAME 
+
+	NAME  shift 197
+	.  error
+
+
+state 119
+	opt_as_alias:  NAME.    (52)
+
+	.  reduce 52 (src line 400)
+
+
+state 120
+	expr:  NAME '.'.NAME 
+
+	NAME  shift 198
+	.  error
+
+
+state 121
+	expr:  NAME '('.opt_val_list ')' 
+	opt_val_list: .    (257)
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  reduce 257 (src line 824)
+
+	val_list  goto 200
+	opt_val_list  goto 199
+	expr  goto 201
+
+state 122
+	expr:  USERVAR ASSIGN.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 202
+
+state 123
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  '-' expr.    (234)
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	.  reduce 234 (src line 792)
+
+
+state 124
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  NOT expr.    (247)
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 247 (src line 805)
+
+
+state 125
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  '!' expr.    (248)
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 248 (src line 806)
+
+
+state 126
+	expr:  EXISTS '('.select_stmt ')' 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 203
+
+state 127
+	expr:  FCOUNT '('.'*' ')' 
+	expr:  FCOUNT '('.expr ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	'*'  shift 204
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 205
+
+state 128
+	expr:  FSUBSTRING '('.val_list ')' 
+	expr:  FSUBSTRING '('.expr FROM expr ')' 
+	expr:  FSUBSTRING '('.expr FROM expr FOR expr ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 206
+	expr  goto 207
+
+state 129
+	expr:  FTRIM '('.val_list ')' 
+	expr:  FTRIM '('.trim_ltb expr FROM val_list ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	BOTH  shift 212
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	LEADING  shift 210
+	TRAILING  shift 211
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 208
+	expr  goto 201
+	trim_ltb  goto 209
+
+state 130
+	expr:  FDATE_ADD '('.expr ',' interval_exp ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 213
+
+state 131
+	expr:  FDATE_SUB '('.expr ',' interval_exp ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 214
+
+state 132
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  CASE expr.case_list END 
+	expr:  CASE expr.case_list ELSE expr END 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	WHEN  shift 134
+	.  error
+
+	case_list  goto 215
+
+state 133
+	expr:  CASE case_list.END 
+	expr:  CASE case_list.ELSE expr END 
+	case_list:  case_list.WHEN expr THEN expr 
+
+	ELSE  shift 217
+	END  shift 216
+	WHEN  shift 218
+	.  error
+
+
+state 134
+	case_list:  WHEN.expr THEN expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 219
+
+state 135
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+	expr:  BINARY expr.    (299)
+
+	.  reduce 299 (src line 892)
+
+
+state 136
+	delete_stmt:  DELETE delete_opts FROM NAME.opt_where opt_orderby opt_limit 
+	delete_list:  NAME.opt_dot_star 
+	opt_where: .    (6)
+	opt_dot_star: .    (91)
+
+	USING  reduce 91 (src line 489)
+	WHERE  shift 221
+	','  reduce 91 (src line 489)
+	'.'  shift 141
+	.  reduce 6 (src line 321)
+
+	opt_where  goto 220
+	opt_dot_star  goto 140
+
+state 137
+	delete_list:  delete_list.',' NAME opt_dot_star 
+	delete_stmt:  DELETE delete_opts FROM delete_list.USING table_references opt_where 
+
+	USING  shift 222
+	','  shift 139
+	.  error
+
+
+state 138
+	delete_stmt:  DELETE delete_opts delete_list FROM.table_references opt_where 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_references  goto 223
+	table_reference  goto 80
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 139
+	delete_list:  delete_list ','.NAME opt_dot_star 
+
+	NAME  shift 224
+	.  error
+
+
+state 140
+	delete_list:  NAME opt_dot_star.    (89)
+
+	.  reduce 89 (src line 484)
+
+
+state 141
+	opt_dot_star:  '.'.'*' 
+
+	'*'  shift 225
+	.  error
+
+
+state 142
+	insert_stmt:  INSERT insert_opts opt_into NAME.opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts opt_into NAME.SET insert_asgn_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts opt_into NAME.opt_col_names select_stmt opt_ondupupdate 
+	opt_col_names: .    (105)
+
+	SET  shift 227
+	'('  shift 228
+	.  reduce 105 (src line 522)
+
+	opt_col_names  goto 226
+
+state 143
+	replace_stmt:  REPLACE insert_opts opt_into NAME.opt_col_names VALUES insert_vals_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts opt_into NAME.SET insert_asgn_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts opt_into NAME.opt_col_names select_stmt opt_ondupupdate 
+	opt_col_names: .    (105)
+
+	SET  shift 230
+	'('  shift 228
+	.  reduce 105 (src line 522)
+
+	opt_col_names  goto 229
+
+state 144
+	table_references:  table_references ','.table_reference 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_reference  goto 231
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 145
+	update_stmt:  UPDATE update_opts table_references SET.update_asgn_list opt_where opt_orderby opt_limit 
+
+	NAME  shift 233
+	.  error
+
+	update_asgn_list  goto 232
+
+state 146
+	join_table:  table_reference opt_inner_cross.JOIN table_factor opt_join_condition 
+
+	JOIN  shift 234
+	.  error
+
+
+state 147
+	join_table:  table_reference STRAIGHT_JOIN.table_factor 
+	join_table:  table_reference STRAIGHT_JOIN.table_factor ON expr 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_factor  goto 235
+	table_subquery  goto 84
+
+state 148
+	join_table:  table_reference left_or_right.opt_outer JOIN table_factor join_condition 
+	opt_outer: .    (62)
+
+	OUTER  shift 237
+	.  reduce 62 (src line 422)
+
+	opt_outer  goto 236
+
+state 149
+	join_table:  table_reference NATURAL.opt_left_or_right_outer JOIN table_factor 
+	opt_left_or_right_outer: .    (68)
+
+	LEFT  shift 239
+	RIGHT  shift 240
+	.  reduce 68 (src line 432)
+
+	opt_left_or_right_outer  goto 238
+
+state 150
+	opt_inner_cross:  INNER.    (60)
+
+	.  reduce 60 (src line 418)
+
+
+state 151
+	opt_inner_cross:  CROSS.    (61)
+
+	.  reduce 61 (src line 419)
+
+
+state 152
+	left_or_right:  LEFT.    (64)
+
+	.  reduce 64 (src line 426)
+
+
+state 153
+	left_or_right:  RIGHT.    (65)
+
+	.  reduce 65 (src line 427)
+
+
+state 154
+	table_factor:  NAME opt_as_alias.index_hint 
+	index_hint: .    (76)
+
+	FORCE  shift 244
+	IGNORE  shift 243
+	USE  shift 242
+	.  reduce 76 (src line 449)
+
+	index_hint  goto 241
+
+state 155
+	table_factor:  NAME '.'.NAME opt_as_alias index_hint 
+
+	NAME  shift 245
+	.  error
+
+
+state 156
+	table_factor:  table_subquery opt_as.NAME 
+
+	NAME  shift 246
+	.  error
+
+
+state 157
+	opt_as:  AS.    (49)
+
+	.  reduce 49 (src line 395)
+
+
+state 158
+	table_references:  table_references.',' table_reference 
+	table_factor:  '(' table_references.')' 
+
+	','  shift 144
+	')'  shift 247
+	.  error
+
+
+state 159
+	table_subquery:  '(' select_stmt.')' 
+
+	')'  shift 248
+	.  error
+
+
+state 160
+	create_database_stmt:  CREATE DATABASE opt_if_not_exists NAME.    (133)
+
+	.  reduce 133 (src line 620)
+
+
+state 161
+	opt_if_not_exists:  IF EXISTS.    (136)
+
+	.  reduce 136 (src line 626)
+
+
+state 162
+	create_database_stmt:  CREATE SCHEMA opt_if_not_exists NAME.    (134)
+
+	.  reduce 134 (src line 622)
+
+
+state 163
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME '.' NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME '.' NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists.NAME '.' NAME create_select_statement 
+
+	NAME  shift 249
+	.  error
+
+
+state 164
+	set_list:  set_list ',' set_expr.    (218)
+
+	.  reduce 218 (src line 767)
+
+
+state 165
+	set_expr:  USERVAR COMPARISON expr.    (219)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 219 (src line 769)
+
+
+state 166
+	set_expr:  USERVAR ASSIGN expr.    (220)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 220 (src line 772)
+
+
+state 167
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references.opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+	table_references:  table_references.',' table_reference 
+	opt_where: .    (6)
+
+	WHERE  shift 221
+	','  shift 144
+	.  reduce 6 (src line 321)
+
+	opt_where  goto 250
+
+state 168
+	select_expr_list:  select_expr_list ',' select_expr.    (38)
+
+	.  reduce 38 (src line 373)
+
+
+state 169
+	expr:  expr.'+' expr 
+	expr:  expr '+' expr.    (228)
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 228 (src line 786)
+
+
+state 170
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr '-' expr.    (229)
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 229 (src line 787)
+
+
+state 171
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr '*' expr.    (230)
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'^'  shift 110
+	.  reduce 230 (src line 788)
+
+
+state 172
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr '/' expr.    (231)
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'^'  shift 110
+	.  reduce 231 (src line 789)
+
+
+state 173
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr '%' expr.    (232)
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'^'  shift 110
+	.  reduce 232 (src line 790)
+
+
+state 174
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr MOD expr.    (233)
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'^'  shift 110
+	.  reduce 233 (src line 791)
+
+
+state 175
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr ANDOP expr.    (235)
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 235 (src line 793)
+
+
+state 176
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr OR expr.    (236)
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 236 (src line 794)
+
+
+state 177
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr XOR expr.    (237)
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 237 (src line 795)
+
+
+state 178
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr COMPARISON expr.    (238)
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 238 (src line 796)
+
+
+state 179
+	expr:  expr COMPARISON '('.select_stmt ')' 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 251
+
+state 180
+	expr:  expr COMPARISON ANY.'(' select_stmt ')' 
+
+	'('  shift 252
+	.  error
+
+
+state 181
+	expr:  expr COMPARISON SOME.'(' select_stmt ')' 
+
+	'('  shift 253
+	.  error
+
+
+state 182
+	expr:  expr COMPARISON ALL.'(' select_stmt ')' 
+
+	'('  shift 254
+	.  error
+
+
+state 183
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr '|' expr.    (243)
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 243 (src line 801)
+
+
+state 184
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr '&' expr.    (244)
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 244 (src line 802)
+
+
+state 185
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr '^' expr.    (245)
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	.  reduce 245 (src line 803)
+
+
+state 186
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr SHIFT expr.    (246)
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 246 (src line 804)
+
+
+state 187
+	expr:  expr IS NULLX.    (250)
+
+	.  reduce 250 (src line 810)
+
+
+state 188
+	expr:  expr IS NOT.NULLX 
+	expr:  expr IS NOT.BOOL 
+
+	BOOL  shift 256
+	NULLX  shift 255
+	.  error
+
+
+state 189
+	expr:  expr IS BOOL.    (252)
+
+	.  reduce 252 (src line 812)
+
+
+state 190
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr BETWEEN expr.AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	AND  shift 257
+	.  error
+
+
+state 191
+	expr:  expr IN '('.val_list ')' 
+	expr:  expr IN '('.select_stmt ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	SELECT  shift 11
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 258
+	select_stmt  goto 259
+	expr  goto 201
+
+state 192
+	expr:  expr NOT IN.'(' val_list ')' 
+	expr:  expr NOT IN.'(' select_stmt ')' 
+
+	'('  shift 260
+	.  error
+
+
+state 193
+	expr:  expr NOT LIKE.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 261
+
+state 194
+	expr:  expr NOT REGEXP.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 262
+
+state 195
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr LIKE expr.    (292)
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	IN  error
+	IS  error
+	LIKE  error
+	REGEXP  error
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 292 (src line 879)
+
+
+state 196
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr REGEXP expr.    (294)
+	expr:  expr.NOT REGEXP expr 
+
+	IN  error
+	IS  error
+	LIKE  error
+	REGEXP  error
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 294 (src line 883)
+
+
+state 197
+	opt_as_alias:  AS NAME.    (51)
+
+	.  reduce 51 (src line 399)
+
+
+state 198
+	expr:  NAME '.' NAME.    (223)
+
+	.  reduce 223 (src line 779)
+
+
+state 199
+	expr:  NAME '(' opt_val_list.')' 
+
+	')'  shift 263
+	.  error
+
+
+state 200
+	opt_val_list:  val_list.    (258)
+
+	.  reduce 258 (src line 825)
+
+
+state 201
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	val_list:  expr.    (255)
+	val_list:  expr.',' val_list 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	','  shift 264
+	.  reduce 255 (src line 820)
+
+
+state 202
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  USERVAR ASSIGN expr.    (249)
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 249 (src line 807)
+
+
+state 203
+	expr:  EXISTS '(' select_stmt.')' 
+
+	')'  shift 265
+	.  error
+
+
+state 204
+	expr:  FCOUNT '(' '*'.')' 
+
+	')'  shift 266
+	.  error
+
+
+state 205
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FCOUNT '(' expr.')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	')'  shift 267
+	.  error
+
+
+state 206
+	expr:  FSUBSTRING '(' val_list.')' 
+
+	')'  shift 268
+	.  error
+
+
+state 207
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	val_list:  expr.    (255)
+	val_list:  expr.',' val_list 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FSUBSTRING '(' expr.FROM expr ')' 
+	expr:  FSUBSTRING '(' expr.FROM expr FOR expr ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	FROM  shift 269
+	','  shift 264
+	.  reduce 255 (src line 820)
+
+
+state 208
+	expr:  FTRIM '(' val_list.')' 
+
+	')'  shift 270
+	.  error
+
+
+state 209
+	expr:  FTRIM '(' trim_ltb.expr FROM val_list ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 271
+
+state 210
+	trim_ltb:  LEADING.    (272)
+
+	.  reduce 272 (src line 849)
+
+
+state 211
+	trim_ltb:  TRAILING.    (273)
+
+	.  reduce 273 (src line 850)
+
+
+state 212
+	trim_ltb:  BOTH.    (274)
+
+	.  reduce 274 (src line 851)
+
+
+state 213
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FDATE_ADD '(' expr.',' interval_exp ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	','  shift 272
+	.  error
+
+
+state 214
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FDATE_SUB '(' expr.',' interval_exp ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	','  shift 273
+	.  error
+
+
+state 215
+	expr:  CASE expr case_list.END 
+	expr:  CASE expr case_list.ELSE expr END 
+	case_list:  case_list.WHEN expr THEN expr 
+
+	ELSE  shift 275
+	END  shift 274
+	WHEN  shift 218
+	.  error
+
+
+state 216
+	expr:  CASE case_list END.    (288)
+
+	.  reduce 288 (src line 871)
+
+
+state 217
+	expr:  CASE case_list ELSE.expr END 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 276
+
+state 218
+	case_list:  case_list WHEN.expr THEN expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 277
+
+state 219
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	case_list:  WHEN expr.THEN expr 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	THEN  shift 278
+	.  error
+
+
+state 220
+	delete_stmt:  DELETE delete_opts FROM NAME opt_where.opt_orderby opt_limit 
+	opt_orderby: .    (19)
+
+	ORDER  shift 280
+	.  reduce 19 (src line 346)
+
+	opt_orderby  goto 279
+
+state 221
+	opt_where:  WHERE.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 281
+
+state 222
+	delete_stmt:  DELETE delete_opts FROM delete_list USING.table_references opt_where 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_references  goto 282
+	table_reference  goto 80
+	table_factor  goto 81
+	join_table  goto 82
+	table_subquery  goto 84
+
+state 223
+	table_references:  table_references.',' table_reference 
+	delete_stmt:  DELETE delete_opts delete_list FROM table_references.opt_where 
+	opt_where: .    (6)
+
+	WHERE  shift 221
+	','  shift 144
+	.  reduce 6 (src line 321)
+
+	opt_where  goto 283
+
+state 224
+	delete_list:  delete_list ',' NAME.opt_dot_star 
+	opt_dot_star: .    (91)
+
+	'.'  shift 141
+	.  reduce 91 (src line 489)
+
+	opt_dot_star  goto 284
+
+state 225
+	opt_dot_star:  '.' '*'.    (92)
+
+	.  reduce 92 (src line 489)
+
+
+state 226
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names.VALUES insert_vals_list opt_ondupupdate 
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names.select_stmt opt_ondupupdate 
+
+	SELECT  shift 11
+	VALUES  shift 285
+	.  error
+
+	select_stmt  goto 286
+
+state 227
+	insert_stmt:  INSERT insert_opts opt_into NAME SET.insert_asgn_list opt_ondupupdate 
+
+	NAME  shift 288
+	.  error
+
+	insert_asgn_list  goto 287
+
+state 228
+	opt_col_names:  '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 289
+
+state 229
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names.VALUES insert_vals_list opt_ondupupdate 
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names.select_stmt opt_ondupupdate 
+
+	SELECT  shift 11
+	VALUES  shift 291
+	.  error
+
+	select_stmt  goto 292
+
+state 230
+	replace_stmt:  REPLACE insert_opts opt_into NAME SET.insert_asgn_list opt_ondupupdate 
+
+	NAME  shift 288
+	.  error
+
+	insert_asgn_list  goto 293
+
+state 231
+	table_references:  table_references ',' table_reference.    (42)
+	join_table:  table_reference.opt_inner_cross JOIN table_factor opt_join_condition 
+	join_table:  table_reference.STRAIGHT_JOIN table_factor 
+	join_table:  table_reference.STRAIGHT_JOIN table_factor ON expr 
+	join_table:  table_reference.left_or_right opt_outer JOIN table_factor join_condition 
+	join_table:  table_reference.NATURAL opt_left_or_right_outer JOIN table_factor 
+	opt_inner_cross: .    (59)
+
+	CROSS  shift 151
+	INNER  shift 150
+	JOIN  reduce 59 (src line 417)
+	LEFT  shift 152
+	NATURAL  shift 149
+	RIGHT  shift 153
+	STRAIGHT_JOIN  shift 147
+	.  reduce 42 (src line 380)
+
+	opt_inner_cross  goto 146
+	left_or_right  goto 148
+
+state 232
+	update_stmt:  UPDATE update_opts table_references SET update_asgn_list.opt_where opt_orderby opt_limit 
+	update_asgn_list:  update_asgn_list.',' NAME COMPARISON expr 
+	update_asgn_list:  update_asgn_list.',' NAME '.' NAME COMPARISON expr 
+	opt_where: .    (6)
+
+	WHERE  shift 221
+	','  shift 295
+	.  reduce 6 (src line 321)
+
+	opt_where  goto 294
+
+state 233
+	update_asgn_list:  NAME.COMPARISON expr 
+	update_asgn_list:  NAME.'.' NAME COMPARISON expr 
+
+	COMPARISON  shift 296
+	'.'  shift 297
+	.  error
+
+
+state 234
+	join_table:  table_reference opt_inner_cross JOIN.table_factor opt_join_condition 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_factor  goto 298
+	table_subquery  goto 84
+
+state 235
+	join_table:  table_reference STRAIGHT_JOIN table_factor.    (55)
+	join_table:  table_reference STRAIGHT_JOIN table_factor.ON expr 
+
+	ON  shift 299
+	.  reduce 55 (src line 407)
+
+
+state 236
+	join_table:  table_reference left_or_right opt_outer.JOIN table_factor join_condition 
+
+	JOIN  shift 300
+	.  error
+
+
+state 237
+	opt_outer:  OUTER.    (63)
+
+	.  reduce 63 (src line 423)
+
+
+state 238
+	join_table:  table_reference NATURAL opt_left_or_right_outer.JOIN table_factor 
+
+	JOIN  shift 301
+	.  error
+
+
+state 239
+	opt_left_or_right_outer:  LEFT.opt_outer 
+	opt_outer: .    (62)
+
+	OUTER  shift 237
+	.  reduce 62 (src line 422)
+
+	opt_outer  goto 302
+
+state 240
+	opt_left_or_right_outer:  RIGHT.opt_outer 
+	opt_outer: .    (62)
+
+	OUTER  shift 237
+	.  reduce 62 (src line 422)
+
+	opt_outer  goto 303
+
+state 241
+	table_factor:  NAME opt_as_alias index_hint.    (45)
+
+	.  reduce 45 (src line 387)
+
+
+state 242
+	index_hint:  USE.KEY opt_for_join '(' index_list ')' 
+
+	KEY  shift 304
+	.  error
+
+
+state 243
+	index_hint:  IGNORE.KEY opt_for_join '(' index_list ')' 
+
+	KEY  shift 305
+	.  error
+
+
+state 244
+	index_hint:  FORCE.KEY opt_for_join '(' index_list ')' 
+
+	KEY  shift 306
+	.  error
+
+
+state 245
+	table_factor:  NAME '.' NAME.opt_as_alias index_hint 
+	opt_as_alias: .    (53)
+
+	NAME  shift 119
+	AS  shift 118
+	.  reduce 53 (src line 401)
+
+	opt_as_alias  goto 307
+
+state 246
+	table_factor:  table_subquery opt_as NAME.    (47)
+
+	.  reduce 47 (src line 391)
+
+
+state 247
+	table_factor:  '(' table_references ')'.    (48)
+
+	.  reduce 48 (src line 392)
+
+
+state 248
+	table_subquery:  '(' select_stmt ')'.    (81)
+
+	.  reduce 81 (src line 460)
+
+
+state 249
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.'(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.'.' NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.'(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.'.' NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME.'.' NAME create_select_statement 
+	opt_ignore_replace: .    (210)
+
+	IGNORE  shift 312
+	REPLACE  shift 313
+	'.'  shift 309
+	'('  shift 308
+	.  reduce 210 (src line 751)
+
+	opt_ignore_replace  goto 311
+	create_select_statement  goto 310
+
+state 250
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where.opt_groupby opt_having opt_orderby opt_limit opt_into_list 
+	opt_groupby: .    (8)
+
+	GROUP  shift 315
+	.  reduce 8 (src line 324)
+
+	opt_groupby  goto 314
+
+state 251
+	expr:  expr COMPARISON '(' select_stmt.')' 
+
+	')'  shift 316
+	.  error
+
+
+state 252
+	expr:  expr COMPARISON ANY '('.select_stmt ')' 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 317
+
+state 253
+	expr:  expr COMPARISON SOME '('.select_stmt ')' 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 318
+
+state 254
+	expr:  expr COMPARISON ALL '('.select_stmt ')' 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 319
+
+state 255
+	expr:  expr IS NOT NULLX.    (251)
+
+	.  reduce 251 (src line 811)
+
+
+state 256
+	expr:  expr IS NOT BOOL.    (253)
+
+	.  reduce 253 (src line 813)
+
+
+state 257
+	expr:  expr BETWEEN expr AND.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 320
+
+state 258
+	expr:  expr IN '(' val_list.')' 
+
+	')'  shift 321
+	.  error
+
+
+state 259
+	expr:  expr IN '(' select_stmt.')' 
+
+	')'  shift 322
+	.  error
+
+
+state 260
+	expr:  expr NOT IN '('.val_list ')' 
+	expr:  expr NOT IN '('.select_stmt ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	SELECT  shift 11
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 323
+	select_stmt  goto 324
+	expr  goto 201
+
+state 261
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr NOT LIKE expr.    (293)
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	IN  error
+	IS  error
+	LIKE  error
+	REGEXP  error
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 293 (src line 880)
+
+
+state 262
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+	expr:  expr NOT REGEXP expr.    (295)
+
+	IN  error
+	IS  error
+	LIKE  error
+	REGEXP  error
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 295 (src line 884)
+
+
+state 263
+	expr:  NAME '(' opt_val_list ')'.    (264)
+
+	.  reduce 264 (src line 835)
+
+
+state 264
+	val_list:  expr ','.val_list 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 325
+	expr  goto 201
+
+state 265
+	expr:  EXISTS '(' select_stmt ')'.    (263)
+
+	.  reduce 263 (src line 832)
+
+
+state 266
+	expr:  FCOUNT '(' '*' ')'.    (265)
+
+	.  reduce 265 (src line 839)
+
+
+state 267
+	expr:  FCOUNT '(' expr ')'.    (266)
+
+	.  reduce 266 (src line 840)
+
+
+state 268
+	expr:  FSUBSTRING '(' val_list ')'.    (267)
+
+	.  reduce 267 (src line 842)
+
+
+state 269
+	expr:  FSUBSTRING '(' expr FROM.expr ')' 
+	expr:  FSUBSTRING '(' expr FROM.expr FOR expr ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 326
+
+state 270
+	expr:  FTRIM '(' val_list ')'.    (270)
+
+	.  reduce 270 (src line 845)
+
+
+state 271
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FTRIM '(' trim_ltb expr.FROM val_list ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	FROM  shift 327
+	.  error
+
+
+state 272
+	expr:  FDATE_ADD '(' expr ','.interval_exp ')' 
+
+	INTERVAL  shift 329
+	.  error
+
+	interval_exp  goto 328
+
+state 273
+	expr:  FDATE_SUB '(' expr ','.interval_exp ')' 
+
+	INTERVAL  shift 329
+	.  error
+
+	interval_exp  goto 330
+
+state 274
+	expr:  CASE expr case_list END.    (286)
+
+	.  reduce 286 (src line 869)
+
+
+state 275
+	expr:  CASE expr case_list ELSE.expr END 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 331
+
+state 276
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  CASE case_list ELSE expr.END 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	END  shift 332
+	.  error
+
+
+state 277
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	case_list:  case_list WHEN expr.THEN expr 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	THEN  shift 333
+	.  error
+
+
+state 278
+	case_list:  WHEN expr THEN.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 334
+
+state 279
+	delete_stmt:  DELETE delete_opts FROM NAME opt_where opt_orderby.opt_limit 
+	opt_limit: .    (21)
+
+	LIMIT  shift 336
+	.  reduce 21 (src line 349)
+
+	opt_limit  goto 335
+
+state 280
+	opt_orderby:  ORDER.BY groupby_list 
+
+	BY  shift 337
+	.  error
+
+
+state 281
+	opt_where:  WHERE expr.    (7)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 7 (src line 322)
+
+
+state 282
+	table_references:  table_references.',' table_reference 
+	delete_stmt:  DELETE delete_opts FROM delete_list USING table_references.opt_where 
+	opt_where: .    (6)
+
+	WHERE  shift 221
+	','  shift 144
+	.  reduce 6 (src line 321)
+
+	opt_where  goto 338
+
+state 283
+	delete_stmt:  DELETE delete_opts delete_list FROM table_references opt_where.    (88)
+
+	.  reduce 88 (src line 479)
+
+
+state 284
+	delete_list:  delete_list ',' NAME opt_dot_star.    (90)
+
+	.  reduce 90 (src line 485)
+
+
+state 285
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names VALUES.insert_vals_list opt_ondupupdate 
+
+	'('  shift 340
+	.  error
+
+	insert_vals_list  goto 339
+
+state 286
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names select_stmt.opt_ondupupdate 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 341
+
+state 287
+	insert_stmt:  INSERT insert_opts opt_into NAME SET insert_asgn_list.opt_ondupupdate 
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON expr 
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON DEFAULT 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	','  shift 344
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 343
+
+state 288
+	insert_asgn_list:  NAME.COMPARISON expr 
+	insert_asgn_list:  NAME.COMPARISON DEFAULT 
+
+	COMPARISON  shift 345
+	.  error
+
+
+state 289
+	column_list:  column_list.',' NAME 
+	opt_col_names:  '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 347
+	.  error
+
+
+state 290
+	column_list:  NAME.    (26)
+
+	.  reduce 26 (src line 357)
+
+
+state 291
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names VALUES.insert_vals_list opt_ondupupdate 
+
+	'('  shift 340
+	.  error
+
+	insert_vals_list  goto 348
+
+state 292
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names select_stmt.opt_ondupupdate 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 349
+
+state 293
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON expr 
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON DEFAULT 
+	replace_stmt:  REPLACE insert_opts opt_into NAME SET insert_asgn_list.opt_ondupupdate 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	','  shift 344
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 350
+
+state 294
+	update_stmt:  UPDATE update_opts table_references SET update_asgn_list opt_where.opt_orderby opt_limit 
+	opt_orderby: .    (19)
+
+	ORDER  shift 280
+	.  reduce 19 (src line 346)
+
+	opt_orderby  goto 351
+
+state 295
+	update_asgn_list:  update_asgn_list ','.NAME COMPARISON expr 
+	update_asgn_list:  update_asgn_list ','.NAME '.' NAME COMPARISON expr 
+
+	NAME  shift 352
+	.  error
+
+
+state 296
+	update_asgn_list:  NAME COMPARISON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 353
+
+state 297
+	update_asgn_list:  NAME '.'.NAME COMPARISON expr 
+
+	NAME  shift 354
+	.  error
+
+
+state 298
+	join_table:  table_reference opt_inner_cross JOIN table_factor.opt_join_condition 
+	opt_join_condition: .    (70)
+
+	ON  shift 357
+	USING  shift 358
+	.  reduce 70 (src line 435)
+
+	opt_join_condition  goto 355
+	join_condition  goto 356
+
+state 299
+	join_table:  table_reference STRAIGHT_JOIN table_factor ON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 359
+
+state 300
+	join_table:  table_reference left_or_right opt_outer JOIN.table_factor join_condition 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_factor  goto 360
+	table_subquery  goto 84
+
+state 301
+	join_table:  table_reference NATURAL opt_left_or_right_outer JOIN.table_factor 
+
+	NAME  shift 83
+	'('  shift 85
+	.  error
+
+	table_factor  goto 361
+	table_subquery  goto 84
+
+state 302
+	opt_left_or_right_outer:  LEFT opt_outer.    (66)
+
+	.  reduce 66 (src line 430)
+
+
+state 303
+	opt_left_or_right_outer:  RIGHT opt_outer.    (67)
+
+	.  reduce 67 (src line 431)
+
+
+state 304
+	index_hint:  USE KEY.opt_for_join '(' index_list ')' 
+	opt_for_join: .    (78)
+
+	FOR  shift 363
+	.  reduce 78 (src line 453)
+
+	opt_for_join  goto 362
+
+state 305
+	index_hint:  IGNORE KEY.opt_for_join '(' index_list ')' 
+	opt_for_join: .    (78)
+
+	FOR  shift 363
+	.  reduce 78 (src line 453)
+
+	opt_for_join  goto 364
+
+state 306
+	index_hint:  FORCE KEY.opt_for_join '(' index_list ')' 
+	opt_for_join: .    (78)
+
+	FOR  shift 363
+	.  reduce 78 (src line 453)
+
+	opt_for_join  goto 365
+
+state 307
+	table_factor:  NAME '.' NAME opt_as_alias.index_hint 
+	index_hint: .    (76)
+
+	FORCE  shift 244
+	IGNORE  shift 243
+	USE  shift 242
+	.  reduce 76 (src line 449)
+
+	index_hint  goto 366
+
+state 308
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '('.create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '('.create_col_list ')' create_select_statement 
+	$$146: .    (146)
+
+	FULLTEXT  shift 373
+	INDEX  shift 372
+	KEY  shift 371
+	PRIMARY  shift 370
+	.  reduce 146 (src line 667)
+
+	create_col_list  goto 367
+	create_definition  goto 368
+	$$146  goto 369
+
+state 309
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.'.NAME '(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.'.NAME '(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.'.NAME create_select_statement 
+
+	NAME  shift 374
+	.  error
+
+
+state 310
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME create_select_statement.    (141)
+
+	.  reduce 141 (src line 648)
+
+
+state 311
+	create_select_statement:  opt_ignore_replace.opt_as select_stmt 
+	opt_as: .    (50)
+
+	AS  shift 157
+	.  reduce 50 (src line 396)
+
+	opt_as  goto 375
+
+state 312
+	opt_ignore_replace:  IGNORE.    (211)
+
+	.  reduce 211 (src line 752)
+
+
+state 313
+	opt_ignore_replace:  REPLACE.    (212)
+
+	.  reduce 212 (src line 753)
+
+
+state 314
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where opt_groupby.opt_having opt_orderby opt_limit opt_into_list 
+	opt_having: .    (17)
+
+	HAVING  shift 377
+	.  reduce 17 (src line 344)
+
+	opt_having  goto 376
+
+state 315
+	opt_groupby:  GROUP.BY groupby_list opt_with_rollup 
+
+	BY  shift 378
+	.  error
+
+
+state 316
+	expr:  expr COMPARISON '(' select_stmt ')'.    (239)
+
+	.  reduce 239 (src line 797)
+
+
+state 317
+	expr:  expr COMPARISON ANY '(' select_stmt.')' 
+
+	')'  shift 379
+	.  error
+
+
+state 318
+	expr:  expr COMPARISON SOME '(' select_stmt.')' 
+
+	')'  shift 380
+	.  error
+
+
+state 319
+	expr:  expr COMPARISON ALL '(' select_stmt.')' 
+
+	')'  shift 381
+	.  error
+
+
+state 320
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr BETWEEN expr AND expr.    (254)
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 254 (src line 816)
+
+
+state 321
+	expr:  expr IN '(' val_list ')'.    (259)
+
+	.  reduce 259 (src line 828)
+
+
+state 322
+	expr:  expr IN '(' select_stmt ')'.    (261)
+
+	.  reduce 261 (src line 830)
+
+
+state 323
+	expr:  expr NOT IN '(' val_list.')' 
+
+	')'  shift 382
+	.  error
+
+
+state 324
+	expr:  expr NOT IN '(' select_stmt.')' 
+
+	')'  shift 383
+	.  error
+
+
+state 325
+	val_list:  expr ',' val_list.    (256)
+
+	.  reduce 256 (src line 821)
+
+
+state 326
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FSUBSTRING '(' expr FROM expr.')' 
+	expr:  FSUBSTRING '(' expr FROM expr.FOR expr ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	FOR  shift 385
+	')'  shift 384
+	.  error
+
+
+state 327
+	expr:  FTRIM '(' trim_ltb expr FROM.val_list ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	val_list  goto 386
+	expr  goto 201
+
+state 328
+	expr:  FDATE_ADD '(' expr ',' interval_exp.')' 
+
+	')'  shift 387
+	.  error
+
+
+state 329
+	interval_exp:  INTERVAL.expr DAY_HOUR 
+	interval_exp:  INTERVAL.expr DAY_MICROSECOND 
+	interval_exp:  INTERVAL.expr DAY_MINUTE 
+	interval_exp:  INTERVAL.expr DAY_SECOND 
+	interval_exp:  INTERVAL.expr YEAR_MONTH 
+	interval_exp:  INTERVAL.expr YEAR 
+	interval_exp:  INTERVAL.expr HOUR_MICROSECOND 
+	interval_exp:  INTERVAL.expr HOUR_MINUTE 
+	interval_exp:  INTERVAL.expr HOUR_SECOND 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 388
+
+state 330
+	expr:  FDATE_SUB '(' expr ',' interval_exp.')' 
+
+	')'  shift 389
+	.  error
+
+
+state 331
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  CASE expr case_list ELSE expr.END 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	END  shift 390
+	.  error
+
+
+state 332
+	expr:  CASE case_list ELSE expr END.    (289)
+
+	.  reduce 289 (src line 872)
+
+
+state 333
+	case_list:  case_list WHEN expr THEN.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 391
+
+state 334
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	case_list:  WHEN expr THEN expr.    (290)
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 290 (src line 875)
+
+
+state 335
+	delete_stmt:  DELETE delete_opts FROM NAME opt_where opt_orderby opt_limit.    (83)
+
+	.  reduce 83 (src line 468)
+
+
+state 336
+	opt_limit:  LIMIT.expr 
+	opt_limit:  LIMIT.expr ',' expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 392
+
+state 337
+	opt_orderby:  ORDER BY.groupby_list 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	groupby_list  goto 393
+	expr  goto 394
+
+state 338
+	delete_stmt:  DELETE delete_opts FROM delete_list USING table_references opt_where.    (93)
+
+	.  reduce 93 (src line 491)
+
+
+state 339
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names VALUES insert_vals_list.opt_ondupupdate 
+	insert_vals_list:  insert_vals_list.',' '(' insert_vals ')' 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	','  shift 396
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 395
+
+state 340
+	insert_vals_list:  '('.insert_vals ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DEFAULT  shift 399
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	insert_vals  goto 397
+	expr  goto 398
+
+state 341
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names select_stmt opt_ondupupdate.    (114)
+
+	.  reduce 114 (src line 542)
+
+
+state 342
+	opt_ondupupdate:  ONDUPLICATE.KEY UPDATE insert_asgn_list 
+
+	KEY  shift 400
+	.  error
+
+
+state 343
+	insert_stmt:  INSERT insert_opts opt_into NAME SET insert_asgn_list opt_ondupupdate.    (113)
+
+	.  reduce 113 (src line 536)
+
+
+state 344
+	insert_asgn_list:  insert_asgn_list ','.NAME COMPARISON expr 
+	insert_asgn_list:  insert_asgn_list ','.NAME COMPARISON DEFAULT 
+
+	NAME  shift 401
+	.  error
+
+
+state 345
+	insert_asgn_list:  NAME COMPARISON.expr 
+	insert_asgn_list:  NAME COMPARISON.DEFAULT 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DEFAULT  shift 403
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 402
+
+state 346
+	column_list:  column_list ','.NAME 
+
+	NAME  shift 404
+	.  error
+
+
+state 347
+	opt_col_names:  '(' column_list ')'.    (106)
+
+	.  reduce 106 (src line 523)
+
+
+state 348
+	insert_vals_list:  insert_vals_list.',' '(' insert_vals ')' 
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names VALUES insert_vals_list.opt_ondupupdate 
+	opt_ondupupdate: .    (96)
+
+	ONDUPLICATE  shift 342
+	','  shift 396
+	.  reduce 96 (src line 508)
+
+	opt_ondupupdate  goto 405
+
+state 349
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names select_stmt opt_ondupupdate.    (122)
+
+	.  reduce 122 (src line 578)
+
+
+state 350
+	replace_stmt:  REPLACE insert_opts opt_into NAME SET insert_asgn_list opt_ondupupdate.    (121)
+
+	.  reduce 121 (src line 572)
+
+
+state 351
+	update_stmt:  UPDATE update_opts table_references SET update_asgn_list opt_where opt_orderby.opt_limit 
+	opt_limit: .    (21)
+
+	LIMIT  shift 336
+	.  reduce 21 (src line 349)
+
+	opt_limit  goto 406
+
+state 352
+	update_asgn_list:  update_asgn_list ',' NAME.COMPARISON expr 
+	update_asgn_list:  update_asgn_list ',' NAME.'.' NAME COMPARISON expr 
+
+	COMPARISON  shift 407
+	'.'  shift 408
+	.  error
+
+
+state 353
+	update_asgn_list:  NAME COMPARISON expr.    (128)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 128 (src line 599)
+
+
+state 354
+	update_asgn_list:  NAME '.' NAME.COMPARISON expr 
+
+	COMPARISON  shift 409
+	.  error
+
+
+state 355
+	join_table:  table_reference opt_inner_cross JOIN table_factor opt_join_condition.    (54)
+
+	.  reduce 54 (src line 404)
+
+
+state 356
+	opt_join_condition:  join_condition.    (69)
+
+	.  reduce 69 (src line 435)
+
+
+state 357
+	join_condition:  ON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 410
+
+state 358
+	join_condition:  USING.'(' column_list ')' 
+
+	'('  shift 411
+	.  error
+
+
+state 359
+	join_table:  table_reference STRAIGHT_JOIN table_factor ON expr.    (56)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 56 (src line 409)
+
+
+state 360
+	join_table:  table_reference left_or_right opt_outer JOIN table_factor.join_condition 
+
+	ON  shift 357
+	USING  shift 358
+	.  error
+
+	join_condition  goto 412
+
+state 361
+	join_table:  table_reference NATURAL opt_left_or_right_outer JOIN table_factor.    (58)
+
+	.  reduce 58 (src line 413)
+
+
+state 362
+	index_hint:  USE KEY opt_for_join.'(' index_list ')' 
+
+	'('  shift 413
+	.  error
+
+
+state 363
+	opt_for_join:  FOR.JOIN 
+
+	JOIN  shift 414
+	.  error
+
+
+state 364
+	index_hint:  IGNORE KEY opt_for_join.'(' index_list ')' 
+
+	'('  shift 415
+	.  error
+
+
+state 365
+	index_hint:  FORCE KEY opt_for_join.'(' index_list ')' 
+
+	'('  shift 416
+	.  error
+
+
+state 366
+	table_factor:  NAME '.' NAME opt_as_alias index_hint.    (46)
+
+	.  reduce 46 (src line 389)
+
+
+state 367
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list.')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list.')' create_select_statement 
+	create_col_list:  create_col_list.',' create_definition 
+
+	','  shift 418
+	')'  shift 417
+	.  error
+
+
+state 368
+	create_col_list:  create_definition.    (144)
+
+	.  reduce 144 (src line 663)
+
+
+state 369
+	create_definition:  $$146.NAME data_type column_atts 
+
+	NAME  shift 419
+	.  error
+
+
+state 370
+	create_definition:  PRIMARY.KEY '(' column_list ')' 
+
+	KEY  shift 420
+	.  error
+
+
+state 371
+	create_definition:  KEY.'(' column_list ')' 
+
+	'('  shift 421
+	.  error
+
+
+state 372
+	create_definition:  INDEX.'(' column_list ')' 
+
+	'('  shift 422
+	.  error
+
+
+state 373
+	create_definition:  FULLTEXT.INDEX '(' column_list ')' 
+	create_definition:  FULLTEXT.KEY '(' column_list ')' 
+
+	INDEX  shift 423
+	KEY  shift 424
+	.  error
+
+
+state 374
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME.'(' create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME.'(' create_col_list ')' create_select_statement 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME.create_select_statement 
+	opt_ignore_replace: .    (210)
+
+	IGNORE  shift 312
+	REPLACE  shift 313
+	'('  shift 425
+	.  reduce 210 (src line 751)
+
+	opt_ignore_replace  goto 311
+	create_select_statement  goto 426
+
+state 375
+	create_select_statement:  opt_ignore_replace opt_as.select_stmt 
+
+	SELECT  shift 11
+	.  error
+
+	select_stmt  goto 427
+
+state 376
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where opt_groupby opt_having.opt_orderby opt_limit opt_into_list 
+	opt_orderby: .    (19)
+
+	ORDER  shift 280
+	.  reduce 19 (src line 346)
+
+	opt_orderby  goto 428
+
+state 377
+	opt_having:  HAVING.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 429
+
+state 378
+	opt_groupby:  GROUP BY.groupby_list opt_with_rollup 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	groupby_list  goto 430
+	expr  goto 394
+
+state 379
+	expr:  expr COMPARISON ANY '(' select_stmt ')'.    (240)
+
+	.  reduce 240 (src line 798)
+
+
+state 380
+	expr:  expr COMPARISON SOME '(' select_stmt ')'.    (241)
+
+	.  reduce 241 (src line 799)
+
+
+state 381
+	expr:  expr COMPARISON ALL '(' select_stmt ')'.    (242)
+
+	.  reduce 242 (src line 800)
+
+
+state 382
+	expr:  expr NOT IN '(' val_list ')'.    (260)
+
+	.  reduce 260 (src line 829)
+
+
+state 383
+	expr:  expr NOT IN '(' select_stmt ')'.    (262)
+
+	.  reduce 262 (src line 831)
+
+
+state 384
+	expr:  FSUBSTRING '(' expr FROM expr ')'.    (268)
+
+	.  reduce 268 (src line 843)
+
+
+state 385
+	expr:  FSUBSTRING '(' expr FROM expr FOR.expr ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 431
+
+state 386
+	expr:  FTRIM '(' trim_ltb expr FROM val_list.')' 
+
+	')'  shift 432
+	.  error
+
+
+state 387
+	expr:  FDATE_ADD '(' expr ',' interval_exp ')'.    (275)
+
+	.  reduce 275 (src line 854)
+
+
+state 388
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	interval_exp:  INTERVAL expr.DAY_HOUR 
+	interval_exp:  INTERVAL expr.DAY_MICROSECOND 
+	interval_exp:  INTERVAL expr.DAY_MINUTE 
+	interval_exp:  INTERVAL expr.DAY_SECOND 
+	interval_exp:  INTERVAL expr.YEAR_MONTH 
+	interval_exp:  INTERVAL expr.YEAR 
+	interval_exp:  INTERVAL expr.HOUR_MICROSECOND 
+	interval_exp:  INTERVAL expr.HOUR_MINUTE 
+	interval_exp:  INTERVAL expr.HOUR_SECOND 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	DAY_HOUR  shift 433
+	DAY_MICROSECOND  shift 434
+	DAY_MINUTE  shift 435
+	DAY_SECOND  shift 436
+	HOUR_MICROSECOND  shift 439
+	HOUR_MINUTE  shift 440
+	HOUR_SECOND  shift 441
+	YEAR  shift 438
+	YEAR_MONTH  shift 437
+	.  error
+
+
+state 389
+	expr:  FDATE_SUB '(' expr ',' interval_exp ')'.    (276)
+
+	.  reduce 276 (src line 855)
+
+
+state 390
+	expr:  CASE expr case_list ELSE expr END.    (287)
+
+	.  reduce 287 (src line 870)
+
+
+state 391
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	case_list:  case_list WHEN expr THEN expr.    (291)
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 291 (src line 876)
+
+
+state 392
+	opt_limit:  LIMIT expr.    (22)
+	opt_limit:  LIMIT expr.',' expr 
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	','  shift 442
+	.  reduce 22 (src line 349)
+
+
+state 393
+	groupby_list:  groupby_list.',' expr opt_asc_desc 
+	opt_orderby:  ORDER BY groupby_list.    (20)
+
+	','  shift 443
+	.  reduce 20 (src line 346)
+
+
+state 394
+	groupby_list:  expr.opt_asc_desc 
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+	opt_asc_desc: .    (12)
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	ASC  shift 445
+	DESC  shift 446
+	.  reduce 12 (src line 335)
+
+	opt_asc_desc  goto 444
+
+state 395
+	insert_stmt:  INSERT insert_opts opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate.    (95)
+
+	.  reduce 95 (src line 502)
+
+
+state 396
+	insert_vals_list:  insert_vals_list ','.'(' insert_vals ')' 
+
+	'('  shift 447
+	.  error
+
+
+state 397
+	insert_vals_list:  '(' insert_vals.')' 
+	insert_vals:  insert_vals.',' expr 
+	insert_vals:  insert_vals.',' DEFAULT 
+
+	','  shift 449
+	')'  shift 448
+	.  error
+
+
+state 398
+	insert_vals:  expr.    (109)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 109 (src line 529)
+
+
+state 399
+	insert_vals:  DEFAULT.    (110)
+
+	.  reduce 110 (src line 531)
+
+
+state 400
+	opt_ondupupdate:  ONDUPLICATE KEY.UPDATE insert_asgn_list 
+
+	UPDATE  shift 450
+	.  error
+
+
+state 401
+	insert_asgn_list:  insert_asgn_list ',' NAME.COMPARISON expr 
+	insert_asgn_list:  insert_asgn_list ',' NAME.COMPARISON DEFAULT 
+
+	COMPARISON  shift 451
+	.  error
+
+
+state 402
+	insert_asgn_list:  NAME COMPARISON expr.    (115)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 115 (src line 547)
+
+
+state 403
+	insert_asgn_list:  NAME COMPARISON DEFAULT.    (116)
+
+	.  reduce 116 (src line 551)
+
+
+state 404
+	column_list:  column_list ',' NAME.    (27)
+
+	.  reduce 27 (src line 358)
+
+
+state 405
+	replace_stmt:  REPLACE insert_opts opt_into NAME opt_col_names VALUES insert_vals_list opt_ondupupdate.    (120)
+
+	.  reduce 120 (src line 566)
+
+
+state 406
+	update_stmt:  UPDATE update_opts table_references SET update_asgn_list opt_where opt_orderby opt_limit.    (124)
+
+	.  reduce 124 (src line 587)
+
+
+state 407
+	update_asgn_list:  update_asgn_list ',' NAME COMPARISON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 452
+
+state 408
+	update_asgn_list:  update_asgn_list ',' NAME '.'.NAME COMPARISON expr 
+
+	NAME  shift 453
+	.  error
+
+
+state 409
+	update_asgn_list:  NAME '.' NAME COMPARISON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 454
+
+state 410
+	join_condition:  ON expr.    (71)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 71 (src line 437)
+
+
+state 411
+	join_condition:  USING '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 455
+
+state 412
+	join_table:  table_reference left_or_right opt_outer JOIN table_factor join_condition.    (57)
+
+	.  reduce 57 (src line 411)
+
+
+state 413
+	index_hint:  USE KEY opt_for_join '('.index_list ')' 
+
+	NAME  shift 457
+	.  error
+
+	index_list  goto 456
+
+state 414
+	opt_for_join:  FOR JOIN.    (77)
+
+	.  reduce 77 (src line 452)
+
+
+state 415
+	index_hint:  IGNORE KEY opt_for_join '('.index_list ')' 
+
+	NAME  shift 457
+	.  error
+
+	index_list  goto 458
+
+state 416
+	index_hint:  FORCE KEY opt_for_join '('.index_list ')' 
+
+	NAME  shift 457
+	.  error
+
+	index_list  goto 459
+
+state 417
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list ')'.    (138)
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list ')'.create_select_statement 
+	opt_ignore_replace: .    (210)
+
+	IGNORE  shift 312
+	REPLACE  shift 313
+	';'  reduce 138 (src line 634)
+	.  reduce 210 (src line 751)
+
+	opt_ignore_replace  goto 311
+	create_select_statement  goto 460
+
+state 418
+	create_col_list:  create_col_list ','.create_definition 
+	$$146: .    (146)
+
+	FULLTEXT  shift 373
+	INDEX  shift 372
+	KEY  shift 371
+	PRIMARY  shift 370
+	.  reduce 146 (src line 667)
+
+	create_definition  goto 461
+	$$146  goto 369
+
+state 419
+	create_definition:  $$146 NAME.data_type column_atts 
+
+	BIGINT  shift 469
+	BINARY  shift 481
+	BIT  shift 463
+	BLOB  shift 484
+	CHAR  shift 479
+	DATE  shift 474
+	DATETIME  shift 477
+	DECIMAL  shift 473
+	DOUBLE  shift 471
+	ENUM  shift 491
+	FLOAT  shift 472
+	INT  shift 467
+	INTEGER  shift 468
+	LONGBLOB  shift 486
+	LONGTEXT  shift 490
+	MEDIUMBLOB  shift 485
+	MEDIUMINT  shift 466
+	MEDIUMTEXT  shift 489
+	REAL  shift 470
+	SET  shift 492
+	SMALLINT  shift 465
+	TEXT  shift 488
+	TIME  shift 475
+	TIMESTAMP  shift 476
+	TINYBLOB  shift 483
+	TINYINT  shift 464
+	TINYTEXT  shift 487
+	VARBINARY  shift 482
+	VARCHAR  shift 480
+	YEAR  shift 478
+	.  error
+
+	data_type  goto 462
+
+state 420
+	create_definition:  PRIMARY KEY.'(' column_list ')' 
+
+	'('  shift 493
+	.  error
+
+
+state 421
+	create_definition:  KEY '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 494
+
+state 422
+	create_definition:  INDEX '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 495
+
+state 423
+	create_definition:  FULLTEXT INDEX.'(' column_list ')' 
+
+	'('  shift 496
+	.  error
+
+
+state 424
+	create_definition:  FULLTEXT KEY.'(' column_list ')' 
+
+	'('  shift 497
+	.  error
+
+
+state 425
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '('.create_col_list ')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '('.create_col_list ')' create_select_statement 
+	$$146: .    (146)
+
+	FULLTEXT  shift 373
+	INDEX  shift 372
+	KEY  shift 371
+	PRIMARY  shift 370
+	.  reduce 146 (src line 667)
+
+	create_col_list  goto 498
+	create_definition  goto 368
+	$$146  goto 369
+
+state 426
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME create_select_statement.    (143)
+
+	.  reduce 143 (src line 658)
+
+
+state 427
+	create_select_statement:  opt_ignore_replace opt_as select_stmt.    (209)
+
+	.  reduce 209 (src line 748)
+
+
+state 428
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where opt_groupby opt_having opt_orderby.opt_limit opt_into_list 
+	opt_limit: .    (21)
+
+	LIMIT  shift 336
+	.  reduce 21 (src line 349)
+
+	opt_limit  goto 499
+
+state 429
+	opt_having:  HAVING expr.    (18)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 18 (src line 344)
+
+
+state 430
+	opt_groupby:  GROUP BY groupby_list.opt_with_rollup 
+	groupby_list:  groupby_list.',' expr opt_asc_desc 
+	opt_with_rollup: .    (15)
+
+	WITH  shift 501
+	','  shift 443
+	.  reduce 15 (src line 340)
+
+	opt_with_rollup  goto 500
+
+state 431
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  FSUBSTRING '(' expr FROM expr FOR expr.')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	')'  shift 502
+	.  error
+
+
+state 432
+	expr:  FTRIM '(' trim_ltb expr FROM val_list ')'.    (271)
+
+	.  reduce 271 (src line 846)
+
+
+state 433
+	interval_exp:  INTERVAL expr DAY_HOUR.    (277)
+
+	.  reduce 277 (src line 858)
+
+
+state 434
+	interval_exp:  INTERVAL expr DAY_MICROSECOND.    (278)
+
+	.  reduce 278 (src line 859)
+
+
+state 435
+	interval_exp:  INTERVAL expr DAY_MINUTE.    (279)
+
+	.  reduce 279 (src line 860)
+
+
+state 436
+	interval_exp:  INTERVAL expr DAY_SECOND.    (280)
+
+	.  reduce 280 (src line 861)
+
+
+state 437
+	interval_exp:  INTERVAL expr YEAR_MONTH.    (281)
+
+	.  reduce 281 (src line 862)
+
+
+state 438
+	interval_exp:  INTERVAL expr YEAR.    (282)
+
+	.  reduce 282 (src line 863)
+
+
+state 439
+	interval_exp:  INTERVAL expr HOUR_MICROSECOND.    (283)
+
+	.  reduce 283 (src line 864)
+
+
+state 440
+	interval_exp:  INTERVAL expr HOUR_MINUTE.    (284)
+
+	.  reduce 284 (src line 865)
+
+
+state 441
+	interval_exp:  INTERVAL expr HOUR_SECOND.    (285)
+
+	.  reduce 285 (src line 866)
+
+
+state 442
+	opt_limit:  LIMIT expr ','.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 503
+
+state 443
+	groupby_list:  groupby_list ','.expr opt_asc_desc 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 504
+
+state 444
+	groupby_list:  expr opt_asc_desc.    (10)
+
+	.  reduce 10 (src line 329)
+
+
+state 445
+	opt_asc_desc:  ASC.    (13)
+
+	.  reduce 13 (src line 336)
+
+
+state 446
+	opt_asc_desc:  DESC.    (14)
+
+	.  reduce 14 (src line 337)
+
+
+state 447
+	insert_vals_list:  insert_vals_list ',' '('.insert_vals ')' 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DEFAULT  shift 399
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	insert_vals  goto 505
+	expr  goto 398
+
+state 448
+	insert_vals_list:  '(' insert_vals ')'.    (107)
+
+	.  reduce 107 (src line 526)
+
+
+state 449
+	insert_vals:  insert_vals ','.expr 
+	insert_vals:  insert_vals ','.DEFAULT 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DEFAULT  shift 507
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 506
+
+state 450
+	opt_ondupupdate:  ONDUPLICATE KEY UPDATE.insert_asgn_list 
+
+	NAME  shift 288
+	.  error
+
+	insert_asgn_list  goto 508
+
+state 451
+	insert_asgn_list:  insert_asgn_list ',' NAME COMPARISON.expr 
+	insert_asgn_list:  insert_asgn_list ',' NAME COMPARISON.DEFAULT 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	DEFAULT  shift 510
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 509
+
+state 452
+	update_asgn_list:  update_asgn_list ',' NAME COMPARISON expr.    (130)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 130 (src line 606)
+
+
+state 453
+	update_asgn_list:  update_asgn_list ',' NAME '.' NAME.COMPARISON expr 
+
+	COMPARISON  shift 511
+	.  error
+
+
+state 454
+	update_asgn_list:  NAME '.' NAME COMPARISON expr.    (129)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 129 (src line 603)
+
+
+state 455
+	column_list:  column_list.',' NAME 
+	join_condition:  USING '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 512
+	.  error
+
+
+state 456
+	index_hint:  USE KEY opt_for_join '(' index_list.')' 
+	index_list:  index_list.',' NAME 
+
+	','  shift 514
+	')'  shift 513
+	.  error
+
+
+state 457
+	index_list:  NAME.    (79)
+
+	.  reduce 79 (src line 456)
+
+
+state 458
+	index_hint:  IGNORE KEY opt_for_join '(' index_list.')' 
+	index_list:  index_list.',' NAME 
+
+	','  shift 514
+	')'  shift 515
+	.  error
+
+
+state 459
+	index_hint:  FORCE KEY opt_for_join '(' index_list.')' 
+	index_list:  index_list.',' NAME 
+
+	','  shift 514
+	')'  shift 516
+	.  error
+
+
+state 460
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '(' create_col_list ')' create_select_statement.    (140)
+
+	.  reduce 140 (src line 643)
+
+
+state 461
+	create_col_list:  create_col_list ',' create_definition.    (145)
+
+	.  reduce 145 (src line 664)
+
+
+state 462
+	create_definition:  $$146 NAME data_type.column_atts 
+	column_atts: .    (153)
+
+	.  reduce 153 (src line 677)
+
+	column_atts  goto 517
+
+state 463
+	data_type:  BIT.opt_length 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 518
+
+state 464
+	data_type:  TINYINT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 520
+
+state 465
+	data_type:  SMALLINT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 521
+
+state 466
+	data_type:  MEDIUMINT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 522
+
+state 467
+	data_type:  INT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 523
+
+state 468
+	data_type:  INTEGER.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 524
+
+state 469
+	data_type:  BIGINT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 525
+
+state 470
+	data_type:  REAL.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 526
+
+state 471
+	data_type:  DOUBLE.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 527
+
+state 472
+	data_type:  FLOAT.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 528
+
+state 473
+	data_type:  DECIMAL.opt_length opt_uz 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 529
+
+state 474
+	data_type:  DATE.    (188)
+
+	.  reduce 188 (src line 723)
+
+
+state 475
+	data_type:  TIME.    (189)
+
+	.  reduce 189 (src line 724)
+
+
+state 476
+	data_type:  TIMESTAMP.    (190)
+
+	.  reduce 190 (src line 725)
+
+
+state 477
+	data_type:  DATETIME.    (191)
+
+	.  reduce 191 (src line 726)
+
+
+state 478
+	data_type:  YEAR.    (192)
+
+	.  reduce 192 (src line 727)
+
+
+state 479
+	data_type:  CHAR.opt_length opt_csc 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 530
+
+state 480
+	data_type:  VARCHAR.'(' INTNUM ')' opt_csc 
+
+	'('  shift 531
+	.  error
+
+
+state 481
+	data_type:  BINARY.opt_length 
+	opt_length: .    (166)
+
+	'('  shift 519
+	.  reduce 166 (src line 692)
+
+	opt_length  goto 532
+
+state 482
+	data_type:  VARBINARY.'(' INTNUM ')' 
+
+	'('  shift 533
+	.  error
+
+
+state 483
+	data_type:  TINYBLOB.    (197)
+
+	.  reduce 197 (src line 732)
+
+
+state 484
+	data_type:  BLOB.    (198)
+
+	.  reduce 198 (src line 733)
+
+
+state 485
+	data_type:  MEDIUMBLOB.    (199)
+
+	.  reduce 199 (src line 734)
+
+
+state 486
+	data_type:  LONGBLOB.    (200)
+
+	.  reduce 200 (src line 735)
+
+
+state 487
+	data_type:  TINYTEXT.opt_binary opt_csc 
+	opt_binary: .    (169)
+
+	BINARY  shift 535
+	.  reduce 169 (src line 697)
+
+	opt_binary  goto 534
+
+state 488
+	data_type:  TEXT.opt_binary opt_csc 
+	opt_binary: .    (169)
+
+	BINARY  shift 535
+	.  reduce 169 (src line 697)
+
+	opt_binary  goto 536
+
+state 489
+	data_type:  MEDIUMTEXT.opt_binary opt_csc 
+	opt_binary: .    (169)
+
+	BINARY  shift 535
+	.  reduce 169 (src line 697)
+
+	opt_binary  goto 537
+
+state 490
+	data_type:  LONGTEXT.opt_binary opt_csc 
+	opt_binary: .    (169)
+
+	BINARY  shift 535
+	.  reduce 169 (src line 697)
+
+	opt_binary  goto 538
+
+state 491
+	data_type:  ENUM.'(' enum_list ')' opt_csc 
+
+	'('  shift 539
+	.  error
+
+
+state 492
+	data_type:  SET.'(' enum_list ')' opt_csc 
+
+	'('  shift 540
+	.  error
+
+
+state 493
+	create_definition:  PRIMARY KEY '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 541
+
+state 494
+	column_list:  column_list.',' NAME 
+	create_definition:  KEY '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 542
+	.  error
+
+
+state 495
+	column_list:  column_list.',' NAME 
+	create_definition:  INDEX '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 543
+	.  error
+
+
+state 496
+	create_definition:  FULLTEXT INDEX '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 544
+
+state 497
+	create_definition:  FULLTEXT KEY '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 545
+
+state 498
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list.')' 
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list.')' create_select_statement 
+	create_col_list:  create_col_list.',' create_definition 
+
+	','  shift 418
+	')'  shift 546
+	.  error
+
+
+state 499
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where opt_groupby opt_having opt_orderby opt_limit.opt_into_list 
+	opt_into_list: .    (24)
+
+	INTO  shift 548
+	.  reduce 24 (src line 353)
+
+	opt_into_list  goto 547
+
+state 500
+	opt_groupby:  GROUP BY groupby_list opt_with_rollup.    (9)
+
+	.  reduce 9 (src line 325)
+
+
+state 501
+	opt_with_rollup:  WITH.ROLLUP 
+
+	ROLLUP  shift 549
+	.  error
+
+
+state 502
+	expr:  FSUBSTRING '(' expr FROM expr FOR expr ')'.    (269)
+
+	.  reduce 269 (src line 844)
+
+
+state 503
+	opt_limit:  LIMIT expr ',' expr.    (23)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 23 (src line 350)
+
+
+state 504
+	groupby_list:  groupby_list ',' expr.opt_asc_desc 
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+	opt_asc_desc: .    (12)
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	ASC  shift 445
+	DESC  shift 446
+	.  reduce 12 (src line 335)
+
+	opt_asc_desc  goto 550
+
+state 505
+	insert_vals_list:  insert_vals_list ',' '(' insert_vals.')' 
+	insert_vals:  insert_vals.',' expr 
+	insert_vals:  insert_vals.',' DEFAULT 
+
+	','  shift 449
+	')'  shift 551
+	.  error
+
+
+state 506
+	insert_vals:  insert_vals ',' expr.    (111)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 111 (src line 532)
+
+
+state 507
+	insert_vals:  insert_vals ',' DEFAULT.    (112)
+
+	.  reduce 112 (src line 533)
+
+
+state 508
+	opt_ondupupdate:  ONDUPLICATE KEY UPDATE insert_asgn_list.    (97)
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON expr 
+	insert_asgn_list:  insert_asgn_list.',' NAME COMPARISON DEFAULT 
+
+	','  shift 344
+	.  reduce 97 (src line 509)
+
+
+state 509
+	insert_asgn_list:  insert_asgn_list ',' NAME COMPARISON expr.    (117)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 117 (src line 554)
+
+
+state 510
+	insert_asgn_list:  insert_asgn_list ',' NAME COMPARISON DEFAULT.    (118)
+
+	.  reduce 118 (src line 557)
+
+
+state 511
+	update_asgn_list:  update_asgn_list ',' NAME '.' NAME COMPARISON.expr 
+
+	NAME  shift 46
+	STRING  shift 48
+	INTNUM  shift 49
+	BOOL  shift 51
+	APPROXNUM  shift 50
+	USERVAR  shift 47
+	NOT  shift 53
+	'!'  shift 54
+	'-'  shift 52
+	BINARY  shift 65
+	CASE  shift 61
+	CURRENT_DATE  shift 63
+	CURRENT_TIME  shift 64
+	CURRENT_TIMESTAMP  shift 62
+	EXISTS  shift 55
+	FSUBSTRING  shift 57
+	FTRIM  shift 58
+	FDATE_ADD  shift 59
+	FDATE_SUB  shift 60
+	FCOUNT  shift 56
+	.  error
+
+	expr  goto 552
+
+state 512
+	join_condition:  USING '(' column_list ')'.    (72)
+
+	.  reduce 72 (src line 439)
+
+
+state 513
+	index_hint:  USE KEY opt_for_join '(' index_list ')'.    (73)
+
+	.  reduce 73 (src line 442)
+
+
+state 514
+	index_list:  index_list ','.NAME 
+
+	NAME  shift 553
+	.  error
+
+
+state 515
+	index_hint:  IGNORE KEY opt_for_join '(' index_list ')'.    (74)
+
+	.  reduce 74 (src line 445)
+
+
+state 516
+	index_hint:  FORCE KEY opt_for_join '(' index_list ')'.    (75)
+
+	.  reduce 75 (src line 447)
+
+
+state 517
+	create_definition:  $$146 NAME data_type column_atts.    (147)
+	column_atts:  column_atts.NOT NULLX 
+	column_atts:  column_atts.NULLX 
+	column_atts:  column_atts.DEFAULT STRING 
+	column_atts:  column_atts.DEFAULT INTNUM 
+	column_atts:  column_atts.DEFAULT APPROXNUM 
+	column_atts:  column_atts.DEFAULT BOOL 
+	column_atts:  column_atts.AUTO_INCREMENT 
+	column_atts:  column_atts.UNIQUE '(' column_list ')' 
+	column_atts:  column_atts.UNIQUE KEY 
+	column_atts:  column_atts.PRIMARY KEY 
+	column_atts:  column_atts.KEY 
+	column_atts:  column_atts.COMMENT STRING 
+
+	NOT  shift 554
+	AUTO_INCREMENT  shift 557
+	COMMENT  shift 561
+	DEFAULT  shift 556
+	KEY  shift 560
+	NULLX  shift 555
+	PRIMARY  shift 559
+	UNIQUE  shift 558
+	.  reduce 147 (src line 667)
+
+
+state 518
+	data_type:  BIT opt_length.    (177)
+
+	.  reduce 177 (src line 711)
+
+
+state 519
+	opt_length:  '('.INTNUM ')' 
+	opt_length:  '('.INTNUM ',' INTNUM ')' 
+
+	INTNUM  shift 562
+	.  error
+
+
+state 520
+	data_type:  TINYINT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 563
+
+state 521
+	data_type:  SMALLINT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 564
+
+state 522
+	data_type:  MEDIUMINT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 565
+
+state 523
+	data_type:  INT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 566
+
+state 524
+	data_type:  INTEGER opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 567
+
+state 525
+	data_type:  BIGINT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 568
+
+state 526
+	data_type:  REAL opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 569
+
+state 527
+	data_type:  DOUBLE opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 570
+
+state 528
+	data_type:  FLOAT opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 571
+
+state 529
+	data_type:  DECIMAL opt_length.opt_uz 
+	opt_uz: .    (171)
+
+	.  reduce 171 (src line 701)
+
+	opt_uz  goto 572
+
+state 530
+	data_type:  CHAR opt_length.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 573
+
+state 531
+	data_type:  VARCHAR '('.INTNUM ')' opt_csc 
+
+	INTNUM  shift 574
+	.  error
+
+
+state 532
+	data_type:  BINARY opt_length.    (195)
+
+	.  reduce 195 (src line 730)
+
+
+state 533
+	data_type:  VARBINARY '('.INTNUM ')' 
+
+	INTNUM  shift 575
+	.  error
+
+
+state 534
+	data_type:  TINYTEXT opt_binary.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 576
+
+state 535
+	opt_binary:  BINARY.    (170)
+
+	.  reduce 170 (src line 698)
+
+
+state 536
+	data_type:  TEXT opt_binary.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 577
+
+state 537
+	data_type:  MEDIUMTEXT opt_binary.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 578
+
+state 538
+	data_type:  LONGTEXT opt_binary.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 579
+
+state 539
+	data_type:  ENUM '('.enum_list ')' opt_csc 
+
+	STRING  shift 581
+	.  error
+
+	enum_list  goto 580
+
+state 540
+	data_type:  SET '('.enum_list ')' opt_csc 
+
+	STRING  shift 581
+	.  error
+
+	enum_list  goto 582
+
+state 541
+	column_list:  column_list.',' NAME 
+	create_definition:  PRIMARY KEY '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 583
+	.  error
+
+
+state 542
+	create_definition:  KEY '(' column_list ')'.    (149)
+
+	.  reduce 149 (src line 671)
+
+
+state 543
+	create_definition:  INDEX '(' column_list ')'.    (150)
+
+	.  reduce 150 (src line 672)
+
+
+state 544
+	column_list:  column_list.',' NAME 
+	create_definition:  FULLTEXT INDEX '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 584
+	.  error
+
+
+state 545
+	column_list:  column_list.',' NAME 
+	create_definition:  FULLTEXT KEY '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 585
+	.  error
+
+
+state 546
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')'.    (139)
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')'.create_select_statement 
+	opt_ignore_replace: .    (210)
+
+	IGNORE  shift 312
+	REPLACE  shift 313
+	';'  reduce 139 (src line 638)
+	.  reduce 210 (src line 751)
+
+	opt_ignore_replace  goto 311
+	create_select_statement  goto 586
+
+state 547
+	select_stmt:  SELECT select_opts select_expr_list FROM table_references opt_where opt_groupby opt_having opt_orderby opt_limit opt_into_list.    (5)
+
+	.  reduce 5 (src line 315)
+
+
+state 548
+	opt_into_list:  INTO.column_list 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 587
+
+state 549
+	opt_with_rollup:  WITH ROLLUP.    (16)
+
+	.  reduce 16 (src line 341)
+
+
+state 550
+	groupby_list:  groupby_list ',' expr opt_asc_desc.    (11)
+
+	.  reduce 11 (src line 331)
+
+
+state 551
+	insert_vals_list:  insert_vals_list ',' '(' insert_vals ')'.    (108)
+
+	.  reduce 108 (src line 527)
+
+
+state 552
+	update_asgn_list:  update_asgn_list ',' NAME '.' NAME COMPARISON expr.    (131)
+	expr:  expr.'+' expr 
+	expr:  expr.'-' expr 
+	expr:  expr.'*' expr 
+	expr:  expr.'/' expr 
+	expr:  expr.'%' expr 
+	expr:  expr.MOD expr 
+	expr:  expr.ANDOP expr 
+	expr:  expr.OR expr 
+	expr:  expr.XOR expr 
+	expr:  expr.COMPARISON expr 
+	expr:  expr.COMPARISON '(' select_stmt ')' 
+	expr:  expr.COMPARISON ANY '(' select_stmt ')' 
+	expr:  expr.COMPARISON SOME '(' select_stmt ')' 
+	expr:  expr.COMPARISON ALL '(' select_stmt ')' 
+	expr:  expr.'|' expr 
+	expr:  expr.'&' expr 
+	expr:  expr.'^' expr 
+	expr:  expr.SHIFT expr 
+	expr:  expr.IS NULLX 
+	expr:  expr.IS NOT NULLX 
+	expr:  expr.IS BOOL 
+	expr:  expr.IS NOT BOOL 
+	expr:  expr.BETWEEN expr AND expr 
+	expr:  expr.IN '(' val_list ')' 
+	expr:  expr.NOT IN '(' val_list ')' 
+	expr:  expr.IN '(' select_stmt ')' 
+	expr:  expr.NOT IN '(' select_stmt ')' 
+	expr:  expr.LIKE expr 
+	expr:  expr.NOT LIKE expr 
+	expr:  expr.REGEXP expr 
+	expr:  expr.NOT REGEXP expr 
+
+	OR  shift 105
+	XOR  shift 106
+	ANDOP  shift 104
+	IN  shift 114
+	IS  shift 112
+	LIKE  shift 116
+	REGEXP  shift 117
+	NOT  shift 115
+	BETWEEN  shift 113
+	COMPARISON  shift 107
+	'|'  shift 108
+	'&'  shift 109
+	SHIFT  shift 111
+	'+'  shift 98
+	'-'  shift 99
+	'*'  shift 100
+	'/'  shift 101
+	'%'  shift 102
+	MOD  shift 103
+	'^'  shift 110
+	.  reduce 131 (src line 609)
+
+
+state 553
+	index_list:  index_list ',' NAME.    (80)
+
+	.  reduce 80 (src line 457)
+
+
+state 554
+	column_atts:  column_atts NOT.NULLX 
+
+	NULLX  shift 588
+	.  error
+
+
+state 555
+	column_atts:  column_atts NULLX.    (155)
+
+	.  reduce 155 (src line 679)
+
+
+state 556
+	column_atts:  column_atts DEFAULT.STRING 
+	column_atts:  column_atts DEFAULT.INTNUM 
+	column_atts:  column_atts DEFAULT.APPROXNUM 
+	column_atts:  column_atts DEFAULT.BOOL 
+
+	STRING  shift 589
+	INTNUM  shift 590
+	BOOL  shift 592
+	APPROXNUM  shift 591
+	.  error
+
+
+state 557
+	column_atts:  column_atts AUTO_INCREMENT.    (160)
+
+	.  reduce 160 (src line 684)
+
+
+state 558
+	column_atts:  column_atts UNIQUE.'(' column_list ')' 
+	column_atts:  column_atts UNIQUE.KEY 
+
+	KEY  shift 594
+	'('  shift 593
+	.  error
+
+
+state 559
+	column_atts:  column_atts PRIMARY.KEY 
+
+	KEY  shift 595
+	.  error
+
+
+state 560
+	column_atts:  column_atts KEY.    (164)
+
+	.  reduce 164 (src line 688)
+
+
+state 561
+	column_atts:  column_atts COMMENT.STRING 
+
+	STRING  shift 596
+	.  error
+
+
+state 562
+	opt_length:  '(' INTNUM.')' 
+	opt_length:  '(' INTNUM.',' INTNUM ')' 
+
+	','  shift 598
+	')'  shift 597
+	.  error
+
+
+state 563
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  TINYINT opt_length opt_uz.    (178)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 178 (src line 713)
+
+
+state 564
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  SMALLINT opt_length opt_uz.    (179)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 179 (src line 714)
+
+
+state 565
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  MEDIUMINT opt_length opt_uz.    (180)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 180 (src line 715)
+
+
+state 566
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  INT opt_length opt_uz.    (181)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 181 (src line 716)
+
+
+state 567
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  INTEGER opt_length opt_uz.    (182)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 182 (src line 717)
+
+
+state 568
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  BIGINT opt_length opt_uz.    (183)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 183 (src line 718)
+
+
+state 569
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  REAL opt_length opt_uz.    (184)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 184 (src line 719)
+
+
+state 570
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  DOUBLE opt_length opt_uz.    (185)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 185 (src line 720)
+
+
+state 571
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  FLOAT opt_length opt_uz.    (186)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 186 (src line 721)
+
+
+state 572
+	opt_uz:  opt_uz.UNSIGNED 
+	opt_uz:  opt_uz.ZEROFILL 
+	data_type:  DECIMAL opt_length opt_uz.    (187)
+
+	UNSIGNED  shift 599
+	ZEROFILL  shift 600
+	.  reduce 187 (src line 722)
+
+
+state 573
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  CHAR opt_length opt_csc.    (193)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 193 (src line 728)
+
+
+state 574
+	data_type:  VARCHAR '(' INTNUM.')' opt_csc 
+
+	')'  shift 603
+	.  error
+
+
+state 575
+	data_type:  VARBINARY '(' INTNUM.')' 
+
+	')'  shift 604
+	.  error
+
+
+state 576
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  TINYTEXT opt_binary opt_csc.    (201)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 201 (src line 736)
+
+
+state 577
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  TEXT opt_binary opt_csc.    (202)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 202 (src line 737)
+
+
+state 578
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  MEDIUMTEXT opt_binary opt_csc.    (203)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 203 (src line 738)
+
+
+state 579
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  LONGTEXT opt_binary opt_csc.    (204)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 204 (src line 739)
+
+
+state 580
+	data_type:  ENUM '(' enum_list.')' opt_csc 
+	enum_list:  enum_list.',' STRING 
+
+	','  shift 606
+	')'  shift 605
+	.  error
+
+
+state 581
+	enum_list:  STRING.    (207)
+
+	.  reduce 207 (src line 744)
+
+
+state 582
+	data_type:  SET '(' enum_list.')' opt_csc 
+	enum_list:  enum_list.',' STRING 
+
+	','  shift 606
+	')'  shift 607
+	.  error
+
+
+state 583
+	create_definition:  PRIMARY KEY '(' column_list ')'.    (148)
+
+	.  reduce 148 (src line 670)
+
+
+state 584
+	create_definition:  FULLTEXT INDEX '(' column_list ')'.    (151)
+
+	.  reduce 151 (src line 673)
+
+
+state 585
+	create_definition:  FULLTEXT KEY '(' column_list ')'.    (152)
+
+	.  reduce 152 (src line 674)
+
+
+state 586
+	create_table_stmt:  CREATE opt_temporary TABLE opt_if_not_exists NAME '.' NAME '(' create_col_list ')' create_select_statement.    (142)
+
+	.  reduce 142 (src line 652)
+
+
+state 587
+	opt_into_list:  INTO column_list.    (25)
+	column_list:  column_list.',' NAME 
+
+	','  shift 346
+	.  reduce 25 (src line 354)
+
+
+state 588
+	column_atts:  column_atts NOT NULLX.    (154)
+
+	.  reduce 154 (src line 678)
+
+
+state 589
+	column_atts:  column_atts DEFAULT STRING.    (156)
+
+	.  reduce 156 (src line 680)
+
+
+state 590
+	column_atts:  column_atts DEFAULT INTNUM.    (157)
+
+	.  reduce 157 (src line 681)
+
+
+state 591
+	column_atts:  column_atts DEFAULT APPROXNUM.    (158)
+
+	.  reduce 158 (src line 682)
+
+
+state 592
+	column_atts:  column_atts DEFAULT BOOL.    (159)
+
+	.  reduce 159 (src line 683)
+
+
+state 593
+	column_atts:  column_atts UNIQUE '('.column_list ')' 
+
+	NAME  shift 290
+	.  error
+
+	column_list  goto 608
+
+state 594
+	column_atts:  column_atts UNIQUE KEY.    (162)
+
+	.  reduce 162 (src line 686)
+
+
+state 595
+	column_atts:  column_atts PRIMARY KEY.    (163)
+
+	.  reduce 163 (src line 687)
+
+
+state 596
+	column_atts:  column_atts COMMENT STRING.    (165)
+
+	.  reduce 165 (src line 689)
+
+
+state 597
+	opt_length:  '(' INTNUM ')'.    (167)
+
+	.  reduce 167 (src line 693)
+
+
+state 598
+	opt_length:  '(' INTNUM ','.INTNUM ')' 
+
+	INTNUM  shift 609
+	.  error
+
+
+state 599
+	opt_uz:  opt_uz UNSIGNED.    (172)
+
+	.  reduce 172 (src line 702)
+
+
+state 600
+	opt_uz:  opt_uz ZEROFILL.    (173)
+
+	.  reduce 173 (src line 703)
+
+
+state 601
+	opt_csc:  opt_csc CHAR.SET STRING 
+
+	SET  shift 610
+	.  error
+
+
+state 602
+	opt_csc:  opt_csc COLLATE.STRING 
+
+	STRING  shift 611
+	.  error
+
+
+state 603
+	data_type:  VARCHAR '(' INTNUM ')'.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 612
+
+state 604
+	data_type:  VARBINARY '(' INTNUM ')'.    (196)
+
+	.  reduce 196 (src line 731)
+
+
+state 605
+	data_type:  ENUM '(' enum_list ')'.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 613
+
+state 606
+	enum_list:  enum_list ','.STRING 
+
+	STRING  shift 614
+	.  error
+
+
+state 607
+	data_type:  SET '(' enum_list ')'.opt_csc 
+	opt_csc: .    (174)
+
+	.  reduce 174 (src line 706)
+
+	opt_csc  goto 615
+
+state 608
+	column_list:  column_list.',' NAME 
+	column_atts:  column_atts UNIQUE '(' column_list.')' 
+
+	','  shift 346
+	')'  shift 616
+	.  error
+
+
+state 609
+	opt_length:  '(' INTNUM ',' INTNUM.')' 
+
+	')'  shift 617
+	.  error
+
+
+state 610
+	opt_csc:  opt_csc CHAR SET.STRING 
+
+	STRING  shift 618
+	.  error
+
+
+state 611
+	opt_csc:  opt_csc COLLATE STRING.    (176)
+
+	.  reduce 176 (src line 708)
+
+
+state 612
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  VARCHAR '(' INTNUM ')' opt_csc.    (194)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 194 (src line 729)
+
+
+state 613
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  ENUM '(' enum_list ')' opt_csc.    (205)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 205 (src line 740)
+
+
+state 614
+	enum_list:  enum_list ',' STRING.    (208)
+
+	.  reduce 208 (src line 745)
+
+
+state 615
+	opt_csc:  opt_csc.CHAR SET STRING 
+	opt_csc:  opt_csc.COLLATE STRING 
+	data_type:  SET '(' enum_list ')' opt_csc.    (206)
+
+	CHAR  shift 601
+	COLLATE  shift 602
+	.  reduce 206 (src line 741)
+
+
+state 616
+	column_atts:  column_atts UNIQUE '(' column_list ')'.    (161)
+
+	.  reduce 161 (src line 685)
+
+
+state 617
+	opt_length:  '(' INTNUM ',' INTNUM ')'.    (168)
+
+	.  reduce 168 (src line 694)
+
+
+state 618
+	opt_csc:  opt_csc CHAR SET STRING.    (175)
+
+	.  reduce 175 (src line 707)
+
+
+254 terminals, 74 nonterminals
+300 grammar rules, 619/8000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+123 working sets used
+memory: parser 317/120000
+332 extra closures
+2807 shift entries, 29 exceptions
+249 goto entries
+45 entries saved by goto default
+Optimizer space used: output 1659/120000
+1659 table entries, 304 zero
+maximum spread: 254, maximum offset: 607
