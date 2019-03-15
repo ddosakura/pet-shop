@@ -8,3 +8,6 @@ build:
 .PHONY: clean
 clean:
 	-rm *.output *.yacc.go *.nn.go
+
+.PHONY: g
+g: build clean
