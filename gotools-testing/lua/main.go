@@ -58,16 +58,20 @@ func callParse(filename string, lex *Lexer) (b bool) {
 	return false
 }
 
+type luaFunc func(...interface{}) interface{}
+type luaTable map[string]interface{}
+type luaCoroutine struct{}
+
 var (
 	vals  map[string]interface{}
-	funcs map[string]func(...interface{}) interface{}
+	funcs map[string]luaFunc
 )
 
 func init() {
 	vals = map[string]interface{}{
 		"_VERSION": "Lua 5.3 (BETA) ddosakura",
 	}
-	funcs = map[string]func(...interface{}) interface{}{
+	funcs = map[string]luaFunc{
 		"print": func(args ...interface{}) interface{} {
 			for i, a := range args {
 				if i == 0 {
@@ -78,6 +82,29 @@ func init() {
 			}
 			fmt.Println()
 			return nil
+		},
+		"type": func(args ...interface{}) interface{} {
+			if len(args) == 0 {
+				panic("bad argument #1 to 'type' (value expected)")
+			}
+			switch args[0].(type) {
+			case nil:
+				return "nil"
+			case string:
+				return "string"
+			case bool:
+				return "boolean"
+			case float64:
+				return "number"
+			case luaFunc:
+				return "function"
+			case luaTable:
+				return "table"
+			case luaCoroutine:
+				return "thread"
+			default:
+				return "userdata"
+			}
 		},
 	}
 }

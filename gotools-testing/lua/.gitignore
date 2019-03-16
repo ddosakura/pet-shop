@@ -1,3 +1,4 @@
 lua
 main_test.go
 *.tmp
+*.out
