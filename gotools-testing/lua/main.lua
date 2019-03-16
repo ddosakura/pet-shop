@@ -10,6 +10,14 @@ print(1, 2)
 
 print("Hello,\n", 'World!', 0)
 
+a = false
+
 --[[
-    call print
+    1. multi
 ]]
+
+--[=[
+    2. multi
+]=]
+
+print(a)

@@ -27,7 +27,7 @@
 
 /("([^"\\]|\\.)*")|('([^'\\]|\\.)*')/ {
     lval.s = unquote(yylex.Text()[1:len(yylex.Text())-1])
-    // fmt.Printf("L STR [%s]\n", lval.s)
+	// log.Printf("L STR [%s]\n", lval.s)
     return STR
 }
 /[0-9]*(\.[0-9]*)?/ {
@@ -36,49 +36,46 @@
     if e != nil {
         panic(e)
     }
-    nChars += len(yylex.Text())
-    // fmt.Printf("L NUM [%s]\n", yylex.Text())
+    // log.Printf("L NUM [%s]\n", yylex.Text())
     return NUM
 }
 /[a-zA-Z_][a-zA-Z0-9_]*/ {
     lval.s = yylex.Text()
-    nChars += len(yylex.Text())
-    // fmt.Printf("L VAL [%s]\n", yylex.Text())
+    // log.Printf("L VAL [%s]\n", yylex.Text())
     return VAL
 }
 
+/--\[\[[^\]]*(\][^\]]+)*\]\]/ {
+    /* multi-line comments */
+    lval.s = yylex.Text()[4:len(yylex.Text())-2]
+    // log.Printf("L MULTI-LINE COMMENT {{%s}}\n", lval.s)
+    return COMMENT
+}
+/--\[=\[[^\]]*(\][^=]+)*\]=\]/ {
+    /* multi-line comments */
+    lval.s = yylex.Text()[5:len(yylex.Text())-3]
+    // log.Printf("L MULTI-LINE COMMENT {{%s}}\n", lval.s)
+    return COMMENT
+}
 /--[^\n]*/ {
     /* one-line comments */
     lval.s = yylex.Text()[2:]
-    // println("L ONE-LINE COMMENT", yylex.Text())
-    return COMMENT
-}
-/--\[\[.*\]\]/ {
-    /* multi-line comments */
-    nLines += strings.Count(yylex.Text(), "\n")
-    tmp := strings.Split(yylex.Text(), "\n")
-    nChars=len(tmp[len(tmp)-1])
-    lval.s = yylex.Text()[4:len(yylex.Text())-2]
-    // println("L MULTI-LINE COMMENT", yylex.Text())
+    // log.Printf("L ONE-LINE COMMENT {{%s}}\n", yylex.Text())
     return COMMENT
 }
 
 /[ \t]/ {
     /* Skip blanks and tabs. */
-    nChars += len(yylex.Text())
+    // log.Printf("L <space/tab>\n")
 }
 /\n/ {
-    nLines++
-    nChars=0
-    // print("> ")
+    // log.Printf("L <enter>\n")
     return int('\n')
 }
 /./ {
-    nChars++
-    // fmt.Printf("L CHAR[%s]\n", yylex.Text())
     return int(yylex.Text()[0])
 }
 //
 
 package main
-import("strconv"/*;"fmt"*/)
+import("strconv"/*;"log"*/)

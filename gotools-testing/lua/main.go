@@ -7,19 +7,15 @@ import (
 	"strconv"
 )
 
-var (
-	nLines = 1
-	nChars int
-)
-
 func main() {
+	var lex *Lexer
 	defer func() {
 		if e := recover(); e != nil {
 			err := errors.New(fmt.Sprint(e))
-			fmt.Printf("./main.lua:%d:%d: %s\n", nLines, nChars, err.Error())
+			fmt.Printf("./main.lua:%d:%d: %s\n", lex.Line()+1, lex.Column()+1, err.Error())
 		}
 	}()
-	lex := NewLexer(os.Stdin)
+	lex = NewLexer(os.Stdin)
 	yyParse(lex)
 }
 

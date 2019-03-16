@@ -50,22 +50,27 @@ prog: stat {
         // println("Y prog | stat")
     } | prog stat {
         // println("Y prog | prog stat")
-    };
+    } | ;
 
 stat: expr {
         // println("Y stat | expr")
-    } | LOCAL VAL'=' expr
-    | VAL '=' expr
-    | COMMENT {
-        // fmt.Printf("Y stat | COMMENT[%s]\n", $$.s)
-    } | '\n' | ';';
+    } | LOCAL VAL'=' expr {
+        /* TODO: */
+    } | VAL '=' expr {
+        vals[$1.s] = $3.v
+    } | COMMENT {
+        // fmt.Printf("Y stat | COMMENT {{%s}}\n", $$.s)
+    } | '\n' {
+        // println("Y stat | \\n")
+    } | ';' {
+        // println("Y stat | ;")
+    };
 
 expr: data {
         // println("Y expr | data")
         $$.v = $1.v
     } | VAL {
-        // println("Y expr | VAL")
-        /* TODO: */
+        $$.v = vals[$1.s]
     } | call {
         // println("Y expr | call")
         $$.v = $1.v
