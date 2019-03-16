@@ -60,8 +60,6 @@ stat: expr {
         vals[$1.s] = $3.v
     } | COMMENT {
         // fmt.Printf("Y stat | COMMENT {{%s}}\n", $$.s)
-    } | '\n' {
-        // println("Y stat | \\n")
     } | ';' {
         // println("Y stat | ;")
     };

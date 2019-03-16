@@ -70,7 +70,14 @@
 }
 /\n/ {
     // log.Printf("L <enter>\n")
-    return int('\n')
+    // println("L <enter>")
+    // return int('\n')
+    if logMode {
+        go func() {
+            time.Sleep(10 * time.Millisecond)
+            print("> ")
+        }()
+    }
 }
 /./ {
     return int(yylex.Text()[0])
@@ -78,4 +85,4 @@
 //
 
 package main
-import("strconv"/*;"log"*/)
+import("strconv";"time"/*;"log"*/)
