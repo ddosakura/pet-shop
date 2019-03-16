@@ -21,3 +21,9 @@ a = false
 ]=]
 
 print(a)
+
+aa = 5
+b = aa + 1
+print(b)
+c = 2 * b
+print(c)

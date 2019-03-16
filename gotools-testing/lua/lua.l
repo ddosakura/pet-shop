@@ -74,7 +74,7 @@
     // return int('\n')
     if logMode {
         go func() {
-            time.Sleep(10 * time.Millisecond)
+            time.Sleep(20 * time.Millisecond)
             print("> ")
         }()
     }

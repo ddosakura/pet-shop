@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"strconv"
 )
 
@@ -15,12 +16,6 @@ var (
 func main() {
 	var lex *Lexer
 	var filename string
-	defer func() {
-		if e := recover(); e != nil {
-			err := errors.New(fmt.Sprint(e))
-			fmt.Printf("%s:%d:%d: %s\n", filename, lex.Line()+1, lex.Column()+1, err.Error())
-		}
-	}()
 	if len(os.Args) == 1 {
 		filename = "stdin"
 		logMode = true
@@ -30,16 +25,37 @@ func main() {
 		w.Write([]byte("\nprint(_VERSION)\n"))
 		go io.Copy(w, os.Stdin)
 	} else {
-		f, e := os.Open(os.Args[1])
+		filename = os.Args[1]
+		if !path.IsAbs(filename) {
+			filename = "./" + filename
+		}
+		f, e := os.Open(filename)
 		if e != nil {
-			fmt.Printf("%s\n", e.Error())
+			panic(e)
 		} else {
 			lex = NewLexer(f)
 		}
 	}
+	for callParse(filename, lex) {
+	}
+}
+
+func callParse(filename string, lex *Lexer) (b bool) {
+	defer func() {
+		if e := recover(); e != nil {
+			err := errors.New(fmt.Sprint(e))
+			if logMode {
+				fmt.Printf("%s:%d:%d: %s\n", filename, lex.Line()-1, lex.Column()+1, err.Error())
+			} else {
+				fmt.Printf("%s:%d:%d: %s\n", filename, lex.Line()+1, lex.Column()+1, err.Error())
+			}
+			b = true
+		}
+	}()
 	if lex != nil {
 		yyParse(lex)
 	}
+	return false
 }
 
 var (
