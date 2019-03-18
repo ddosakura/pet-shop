@@ -40,6 +40,11 @@ func opDevide(a, b interface{}) float64 {
 	return a.(float64) / b.(float64)
 }
 
+// a%b
+func opMod(a, b interface{}) float64 {
+	return math.Mod(a.(float64), b.(float64))
+}
+
 // ---
 
 // a+b

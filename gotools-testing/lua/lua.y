@@ -121,6 +121,8 @@ expr3: expr2 {
         $$.v = opMultiply($1.v, $3.v)
     } | expr2 '/' expr2 {
         $$.v = opDevide($1.v, $3.v)
+    } | expr2 '%' expr2 {
+        $$.v = opMod($1.v, $3.v)
     };
 
 expr2: expr1 {
