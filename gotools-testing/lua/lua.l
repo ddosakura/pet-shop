@@ -2,6 +2,15 @@
 /or/ { return OR }
 /not/ { return NOT }
 
+/</  { return LT }
+/<=/ { return LE }
+/>/  { return GT }
+/>=/ { return GE }
+/==/ { return EQ }
+/~=/ { return NE }
+
+/\.\./ { return StrAppend }
+
 /if/ { return IF }
 /then/ { return THEN }
 /elseif/ { return ELIF }

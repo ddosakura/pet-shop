@@ -1,4 +1,4 @@
-print();
+print(-2^3);
 print(6.5, 3)
 
 print(1.0, false, nil, 3.0)

@@ -87,25 +87,30 @@ func init() {
 			if len(args) == 0 {
 				panic("bad argument #1 to 'type' (value expected)")
 			}
-			switch args[0].(type) {
-			case nil:
-				return "nil"
-			case string:
-				return "string"
-			case bool:
-				return "boolean"
-			case float64:
-				return "number"
-			case luaFunc:
-				return "function"
-			case luaTable:
-				return "table"
-			case luaCoroutine:
-				return "thread"
-			default:
-				return "userdata"
-			}
+			return valType(args[0])
 		},
+	}
+}
+
+func valType(a interface{}) string {
+	switch a.(type) {
+	case nil:
+		return "nil"
+	case string:
+		return "string"
+	case bool:
+		return "boolean"
+	case float64:
+		return "number"
+	case luaFunc:
+		return "function"
+	case luaTable:
+		return "table"
+	case luaCoroutine:
+		return "thread"
+	default:
+		// return "userdata"
+		return ""
 	}
 }
 
