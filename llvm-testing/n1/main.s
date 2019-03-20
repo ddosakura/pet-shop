@@ -59,5 +59,5 @@ main:                                   # @main
 	.size	main, .Lfunc_end3-main
 	.cfi_endproc
                                         # -- End function
-
+callq	main
 	.section	".note.GNU-stack","",@progbits
