@@ -28,7 +28,7 @@ op:                                     # @op
 add:                                    # @add
 	.cfi_startproc
 # %bb.0:                                # %add
-	movl	$4, %eax
+	leaq	(%rdi,%rsi), %rax
 	retq
 .Lfunc_end2:
 	.size	add, .Lfunc_end2-add
@@ -59,5 +59,11 @@ main:                                   # @main
 	.size	main, .Lfunc_end3-main
 	.cfi_endproc
                                         # -- End function
-callq	main
+	.type	.L.str,@object          # @.str
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.L.str:
+	.asciz	"%lld\n"
+	.size	.L.str, 6
+
+
 	.section	".note.GNU-stack","",@progbits

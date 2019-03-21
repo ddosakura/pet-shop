@@ -17,6 +17,8 @@ func main() {
 
 	m := ir.NewModule()
 	m.SourceFilename = "main.src"
+	str := m.NewGlobalDef("str", constant.NewCharArrayFromString("%lld\n"))
+	printf := m.NewFunc("printf", types.I32, ir.NewParam("", types.I8Ptr))
 
 	ip := m.NewFunc("ip", INT)
 	ipb := ip.NewBlock("input")
@@ -24,11 +26,15 @@ func main() {
 
 	op := m.NewFunc("op", VOID, ir.NewParam("x", INT))
 	opb := op.NewBlock("output")
+	opb.NewCall(printf, str, TMP)
+	// opb.NewRet()
 	opb.NewUnreachable()
 
-	add := m.NewFunc("add", INT, ir.NewParam("x", INT), ir.NewParam("y", INT))
+	addx := ir.NewParam("x", INT)
+	addy := ir.NewParam("y", INT)
+	add := m.NewFunc("add", INT, addx, addy)
 	addb := add.NewBlock("add")
-	tmp := addb.NewAdd(TMP, TMP)
+	tmp := addb.NewAdd(addx, addy)
 	addb.NewRet(tmp)
 
 	main := m.NewFunc("main", INT)
@@ -39,7 +45,7 @@ func main() {
 	mainb.NewCall(op, c)
 	mainb.NewRet(constant.NewInt(INT, 0))
 
-	fmt.Println(m)
+	fmt.Println(m, str, printf)
 
 	ioutil.WriteFile("main.ll", []byte(m.String()), 0644)
 }
