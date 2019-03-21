@@ -17,7 +17,9 @@ func main() {
 
 	m := ir.NewModule()
 	m.SourceFilename = "main.src"
-	str := m.NewGlobalDef("str", constant.NewCharArrayFromString("%lld\n"))
+	str := m.NewGlobalDef(".str", constant.NewCharArray([]byte{
+		'%', 'l', 'l', 'd', '\n', 0,
+	}))
 	printf := m.NewFunc("printf", types.I32, ir.NewParam("", types.I8Ptr))
 
 	ip := m.NewFunc("ip", INT)
@@ -45,7 +47,7 @@ func main() {
 	mainb.NewCall(op, c)
 	mainb.NewRet(constant.NewInt(INT, 0))
 
-	fmt.Println(m, str, printf)
+	fmt.Println(m)
 
 	ioutil.WriteFile("main.ll", []byte(m.String()), 0644)
 }

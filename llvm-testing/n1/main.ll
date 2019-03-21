@@ -1,6 +1,6 @@
 source_filename = "main.src"
 
-@.str = private unnamed_addr constant [6 x i8] c"%lld\0A\00", align 1
+@.str = global [6 x i8] c"%lld\0A\00"
 
 declare i32 @printf(i8*, ...)
 
@@ -11,8 +11,8 @@ input:
 
 define void @op(i64 %x) {
 output:
-	%0 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i32 0, i32 0), i64 %x)
-	unreachable
+  %0 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i32 0, i32 0), i64 %x)
+	ret void
 }
 
 define i64 @add(i64 %x, i64 %y) {

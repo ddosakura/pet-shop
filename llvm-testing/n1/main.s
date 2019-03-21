@@ -18,6 +18,16 @@ ip:                                     # @ip
 op:                                     # @op
 	.cfi_startproc
 # %bb.0:                                # %output
+	pushq	%rax
+	.cfi_def_cfa_offset 16
+	movq	%rdi, %rcx
+	movl	$.str, %edi
+	xorl	%eax, %eax
+	movq	%rcx, %rsi
+	callq	printf
+	popq	%rax
+	.cfi_def_cfa_offset 8
+	retq
 .Lfunc_end1:
 	.size	op, .Lfunc_end1-op
 	.cfi_endproc
@@ -59,11 +69,12 @@ main:                                   # @main
 	.size	main, .Lfunc_end3-main
 	.cfi_endproc
                                         # -- End function
-	.type	.L.str,@object          # @.str
-	.section	.rodata.str1.1,"aMS",@progbits,1
-.L.str:
+	.type	.str,@object            # @.str
+	.data
+	.globl	.str
+.str:
 	.asciz	"%lld\n"
-	.size	.L.str, 6
+	.size	.str, 6
 
 
 	.section	".note.GNU-stack","",@progbits
