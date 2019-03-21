@@ -27,8 +27,8 @@ func main() {
 	op := m.NewFunc("op", VOID, ir.NewParam("x", INT))
 	opb := op.NewBlock("output")
 	opb.NewCall(printf, str, TMP)
-	// opb.NewRet()
-	opb.NewUnreachable()
+	// see: llvm/ir/terminator.go
+	opb.NewRet(nil)
 
 	addx := ir.NewParam("x", INT)
 	addy := ir.NewParam("y", INT)
