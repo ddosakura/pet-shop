@@ -26,3 +26,19 @@ build:
 hex:
 	hexdump main.out
 	# od -h main.out
+
+
+llco:
+	llc main.bc -o main.o -filetype=obj
+ld:
+	ld -m elf_x86_64 -dynamic-linker \
+    /lib/ld-linux-x86-64.so.2 \
+    -o "main.out" "main.o" \
+    /usr/lib/crt1.o \
+    /usr/lib/crti.o \
+    /usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/crtbegin.o \
+    /usr/lib/gcc/x86_64-pc-linux-gnu/8.2.1/crtend.o \
+    /usr/lib/crtn.o \
+    -lc; chmod +x main.out
+# llc32:
+# 	llc main.bc -o main.x86.s -mtriple=x86
