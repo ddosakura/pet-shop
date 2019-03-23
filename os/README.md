@@ -13,6 +13,10 @@
 
 + [debug](https://www.jianshu.com/p/3b0588acbe16)
 
+### Grub
+
+[将Grub安装到u盘](./Grub.md)
+
 ### BIOS
 
 + [BIOS中断大全](https://blog.csdn.net/weixin_37656939/article/details/79684611)
