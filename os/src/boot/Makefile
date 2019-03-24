@@ -8,3 +8,10 @@ bochs:
 	sudo bochs -f boot.bxrc
 bochsq:
 	sudo bochs -q -f boot.bxrc
+
+#read:
+#	readelf -s boot.bin
+#dump:
+#	objdump -d boot.bin
+#gdb:
+#
