@@ -38,7 +38,7 @@ wos: m wcp um see1 see3
 wa: w wos
 
 clean:
-	rm *.lst *.bin
+	rm *.lst *.bin *.log
 
 bochs:
 	sudo bochs -f boot.bxrc
