@@ -129,7 +129,7 @@ errmsg2 db  "Load Error! Payload may be damaged!"
 lenstr3 equ $-errmsg2
 okmsg   db  "Load Success!"
 lenstr4 equ $-okmsg
-payload equ 0x8200
+payload equ 0x8200          ; 载入地址 0x08200~0x34fff
 CNUM    equ 10              ; 读入的柱面数
 
 TIMES   510-($-$$) DB 0
