@@ -4,8 +4,8 @@ main.bc: main.ll
 	llvm-as main.ll -o main.bc
 main.s: main.bc
 	llc main.bc -o main.s -march=x86
-main.asm: main.bc
-	llc main.bc -o main.asm -march=x86 --x86-asm-syntax=intel
+main.ll.asm: main.bc
+	llc main.bc -o main.ll.asm -march=x86 --x86-asm-syntax=intel
 main.o: main.s
 	as main.s -o main.o --32
 #main.o: main.bc
@@ -30,4 +30,4 @@ wcp: init.bin
 w: m wcp um
 
 clean:
-	rm *.ll *.bc *.s *.o *.bin *.lst
+	rm *.ll *.bc *.s *.o *.bin *.lst *.ll.asm
