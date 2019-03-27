@@ -2,6 +2,7 @@
 *.img
 *.log
 *.lst
+*.tmp
 
 # llvm 的产物（包括AT&T汇编）
 *.ll
