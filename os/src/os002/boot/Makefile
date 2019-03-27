@@ -1,7 +1,7 @@
 boot.bin: boot.asm
 	nasm boot.asm -o boot.bin -l boot.lst
-head.bin: head.asm
-	nasm head.asm -o head.bin -l head.lst
+setup.bin: setup.asm
+	nasm setup.asm -o setup.bin -l setup.lst
 
 # ipl
 boot: boot.bin
@@ -12,12 +12,11 @@ m:
 	sudo mount -o loop ../os.img ../../point
 um:
 	sudo umount ../../point
-wcp: head.bin
-	sudo cp ./head.bin ../../point/
-w: m wcp um
+wcp: setup.bin
+	sudo cp ./setup.bin ../../point/
+w: setup.bin m wcp um
 
-all: boot wos
+all: boot w
 
 clean:
 	rm *.lst *.bin
-

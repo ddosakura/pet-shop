@@ -14,3 +14,7 @@ VMODE	EQU		0x0ff2			; 颜色位数
 SCRNX	EQU		0x0ff4			; screenX
 SCRNY	EQU		0x0ff6			; screenY
 VRAM	EQU		0x0ff8			; 图像缓冲区的开始地址
+
+BOTPAK	EQU		0x00280000
+DSKCAC	EQU		0x00100000
+DSKCAC0	EQU		0x00008000
