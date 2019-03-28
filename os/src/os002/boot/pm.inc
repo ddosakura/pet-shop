@@ -274,3 +274,50 @@ SA_TIL		EQU	4	; ┛
 	dw	((%2 >> 16) & 0FFFFh)			; 偏移2
 %endmacro ; 共 8 字节
 ; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+; InitGDT <LABEL_FOR_SEG>, <LABEL_FOR_DESC>
+%macro InitGDT 2
+	xor eax, eax
+	mov ax, cs
+	shl eax, 4
+	add eax, %1
+	mov word [%2 + 2], ax
+	shr eax, 16
+	mov byte [%2 + 4], al
+	mov byte [%2 + 7], ah
+%endmacro
+
+; LoadGDT LABEL_GDT, GdtPtr
+%macro LoadGDT 2
+	xor eax, eax
+	mov ax, ds
+	shl eax, 4
+	add eax, %1			; eax <- gdt 基地址
+	mov dword [%2 + 2], eax	; [GdtPtr + 2] <- gdt 基地址
+	; 加载 GDTR
+	lgdt [%2]
+%endmacro
+
+%macro EnableA20 0
+	; 关中断 (cli关闭所有中断，sti打开所有中断)
+	cli
+	; 打开地址线 A20 最简单的方法，与一些硬件可能会发生冲突
+	; https://www.xuebuyuan.com/1042292.html
+	in	al, 0x92
+	or	al, 00000010b
+	out	0x92, al
+%endmacro
+
+%macro DisableA20 0
+	; 关闭 A20 地址线
+	in	al, 0x92
+	and	al, 11111101b
+	out	0x92, al
+	; 开中断
+	sti
+%endmacro
+
+%macro LoopHLT 1
+	hlt
+	jmp %1
+%endmacro
