@@ -16,17 +16,21 @@ LABEL_DESC_STACK:   Descriptor 0,       TopOfStack,     DA_DRWA+DA_32
 
 ; Test数据段
 LABEL_DESC_TEST:    Descriptor 0x500000,0xffff,         DA_DRW
+
 ; 显存首地址-文本模式（数据段）
 LABEL_DESC_VIDEO:   Descriptor 0xb8000, 0xffff,         DA_DRW
 ; 显存首地址-彩色（数据段）
 ; https://blog.csdn.net/pizi0475/article/details/8739577
 LABEL_DESC_VIDEOX:  Descriptor 0xa0000,	0xffff,         DA_DRW
 
+; LDT段 (局部描述符)
+LABEL_DESC_LDT:		Descriptor 0,		LDTLen-1,		DA_LDT
+
 GdtLen	equ	$ - LABEL_GDT	; GDT长度
 GdtPtr	dw	GdtLen - 1		; GDT界限
-		dd	0				; GDT基地址
+		dd	0				; GDT基地址(会由初始化代码设置)
 
-; GDT 选择子
+; GDT选择子
 SelectorNormal		equ LABEL_DESC_NORMAL   - LABEL_GDT
 SelectorCode32		equ LABEL_DESC_CODE32   - LABEL_GDT
 SelectorCode16		equ LABEL_DESC_CODE16   - LABEL_GDT
@@ -35,10 +39,13 @@ SelectorStack		equ LABEL_DESC_STACK    - LABEL_GDT
 SelectorTest		equ LABEL_DESC_TEST	    - LABEL_GDT
 SelectorVideo       equ LABEL_DESC_VIDEO    - LABEL_GDT
 SelectorVideoX		equ LABEL_DESC_VIDEOX   - LABEL_GDT
+; LDT段 的 GDT选择子
+SelectorLDT			equ LABEL_DESC_LDT		- LABEL_GDT
 
 
 
 ; Data数据段
+[SECTION .data]
 ALIGN	32
 [BITS	32]
 LABEL_DATA:

@@ -317,7 +317,8 @@ SA_TIL		EQU	4	; ┛
 	sti
 %endmacro
 
-%macro LoopHLT 1
+%macro LoopHLT 0
+.fin:
 	hlt
-	jmp %1
+	jmp .fin
 %endmacro
