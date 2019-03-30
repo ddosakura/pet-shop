@@ -1,5 +1,6 @@
 %include 'config.inc'
 %include 'pm.inc'
+%include 'macro.inc'
 offset	equ 0
 org		offset
 
@@ -42,6 +43,8 @@ mov		[SPValueInRealMode], sp
 InitGDT LABEL_SEG_CODE16, LABEL_DESC_CODE16
 ; 初始化 32 位代码段描述符
 InitGDT LABEL_SEG_CODE32, LABEL_DESC_CODE32
+; 初始化测试调用门的32位代码段描述符
+InitGDT LABEL_SEG_CODE_DEST, LABEL_DESC_CODE_DEST
 ; 初始化数据段描述符
 InitGDT LABEL_DATA, LABEL_DESC_DATA
 ; 初始化堆栈段描述符
@@ -112,10 +115,14 @@ LABEL_SEG_CODE32:
 	call	TestWrite
 	call	TestRead
 
+	; 测试调用门（无特权级变换），将打印字母 'C'
+	call	SelectorCallGateTest:0
+	; = call SelectorCodeDest:0
+
 	; Load LDT
 	mov	ax, SelectorLDT
 	lldt ax
-	jmp	SelectorLDTCodeA:0		; 跳入局部任务
+	jmp	SelectorLDTCodeA:0		; 跳入局部任务 L
 
 	; 到此停止
 	; jmp	SelectorCode16:0
@@ -209,6 +216,16 @@ SegCode32Len	equ	$ - LABEL_SEG_CODE32
 
 
 
+; 调用门目标段
+[BITS	32]
+LABEL_SEG_CODE_DEST:
+	printC 14, 0, 'C'
+	retf
+
+SegCodeDestLen	equ	$ - LABEL_SEG_CODE_DEST
+
+
+
 ; 16 位代码段. 由 32 位代码段跳入, 跳出后到实模式
 ALIGN	32
 [BITS	16]
@@ -254,14 +271,7 @@ SelectorLDTCodeA	equ	LABEL_LDT_DESC_CODEA	- LABEL_LDT + SA_TIL
 ALIGN	32
 [BITS	32]
 LABEL_CODE_A:
-	mov	ax, SelectorVideo
-	mov	gs, ax			; 视频段选择子(目的)
-
-	mov	edi, (80 * 13 + 0) * 2	; 屏幕第 11 行, 第 0 列。
-	mov	ah, 0Ch			; 0000: 黑底    1100: 红字
-	mov	al, 'L'
-	mov	[gs:edi], ax
-
+	printC 13, 0, 'L'
 	; 准备经由16位代码段跳回实模式
 	jmp	SelectorCode16:0
 CodeALen	equ	$-LABEL_CODE_A
