@@ -39,16 +39,24 @@ go_to_protect:
 ; 4. jmp
 
 mov		[SPValueInRealMode], sp
+
 ; 初始化 16 位代码段描述符
 InitGDT LABEL_SEG_CODE16, LABEL_DESC_CODE16
 ; 初始化 32 位代码段描述符
 InitGDT LABEL_SEG_CODE32, LABEL_DESC_CODE32
 ; 初始化测试调用门的32位代码段描述符
 InitGDT LABEL_SEG_CODE_DEST, LABEL_DESC_CODE_DEST
+; 初始化Ring3描述符
+InitGDT LABEL_CODE_RING3, LABEL_DESC_CODE_RING3
+
 ; 初始化数据段描述符
 InitGDT LABEL_DATA, LABEL_DESC_DATA
 ; 初始化堆栈段描述符
 InitGDT LABEL_STACK, LABEL_DESC_STACK
+; 初始化堆栈段描述符(ring3)
+InitGDT LABEL_STACK3, LABEL_DESC_STACK3
+; 初始化 TSS 描述符
+InitGDT LABEL_TSS, LABEL_DESC_TSS
 
 ; 初始化 LDT 在 GDT 中的描述符
 InitGDT LABEL_LDT, LABEL_DESC_LDT
@@ -115,14 +123,14 @@ LABEL_SEG_CODE32:
 	call	TestWrite
 	call	TestRead
 
-	; 测试调用门（无特权级变换），将打印字母 'C'
-	call	SelectorCallGateTest:0
-	; = call SelectorCodeDest:0
-
-	; Load LDT
-	mov	ax, SelectorLDT
-	lldt ax
-	jmp	SelectorLDTCodeA:0		; 跳入局部任务 L
+	; Load TSS
+	mov	ax, SelectorTSS
+	ltr	ax	; 在任务内发生特权级变换时要切换堆栈，而内层堆栈的指针存放在当前任务的TSS中，所以要设置任务状态段寄存器 TR
+	push	SelectorStack3		; 栈选择子
+	push	TopOfStack3			; 栈指针
+	push	SelectorCodeRing3	; 目标代码段
+	push	0
+	retf	; Ring0 -> Ring3
 
 	; 到此停止
 	; jmp	SelectorCode16:0
@@ -220,9 +228,29 @@ SegCode32Len	equ	$ - LABEL_SEG_CODE32
 [BITS	32]
 LABEL_SEG_CODE_DEST:
 	printC 14, 0, 'C'
-	retf
+	;retf
+
+	; Load LDT
+	mov	ax, SelectorLDT
+	lldt ax
+	jmp	SelectorLDTCodeA:0		; 跳入局部任务 L
 
 SegCodeDestLen	equ	$ - LABEL_SEG_CODE_DEST
+
+
+
+; CodeRing3
+ALIGN	32
+[BITS	32]
+LABEL_CODE_RING3:
+	printC 15, 0, '3'
+
+	; 测试调用门（有特权级变换）
+	call	SelectorCallGateTest:0
+	; = call SelectorCodeDest:0
+	
+	jmp	$
+SegCodeRing3Len	equ	$ - LABEL_CODE_RING3
 
 
 
