@@ -21,7 +21,7 @@ mov		[LABEL_GO_BACK_TO_REAL+3], ax
 ; 3. 置 cr0 的 PE 位为 1
 ; 4. jmp
 
-mov		[SPValueInRealMode], sp
+mov		[_wSPValueInRealMode], sp
 
 ; 得到内存数
 mov	ebx, 0
@@ -70,7 +70,7 @@ mov		ax, cs
 mov		ds, ax
 mov		es, ax
 mov		ss, ax
-mov		sp, [SPValueInRealMode]
+mov		sp, [_wSPValueInRealMode]
 DisableA20
 LoopHLT
 
