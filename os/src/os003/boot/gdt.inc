@@ -43,11 +43,43 @@ SelectorPageTbl		equ	LABEL_DESC_PAGE_TBL	- LABEL_GDT
 ALIGN	32
 [BITS	32]
 LABEL_DATA:
-SPValueInRealMode	dw	0
+; 实模式下使用这些符号
 ; 字符串
-PMMessage:      db	"In Protect Mode now. ^-^", 0	; 在保护模式中显示
-OffsetPMMessage equ	PMMessage-$$
-DataLen         equ	$-LABEL_DATA
+_szPMMessage:			db	"In Protect Mode now. ^-^", 0Ah, 0Ah, 0	; 进入保护模式后显示此字符串
+_szMemChkTitle:			db	"BaseAddrL BaseAddrH LengthLow LengthHigh   Type", 0Ah, 0	; 进入保护模式后显示此字符串
+_szRAMSize			db	"RAM size:", 0
+_szReturn			db	0Ah, 0
+; 变量
+_wSPValueInRealMode		dw	0
+_dwMCRNumber:			dd	0	; Memory Check Result
+_dwDispPos:			dd	(80 * 6 + 0) * 2	; 屏幕第 6 行, 第 0 列。
+_dwMemSize:			dd	0
+_ARDStruct:			; Address Range Descriptor Structure
+	_dwBaseAddrLow:		dd	0
+	_dwBaseAddrHigh:	dd	0
+	_dwLengthLow:		dd	0
+	_dwLengthHigh:		dd	0
+	_dwType:		dd	0
+
+_MemChkBuf:	times	256	db	0
+
+; 保护模式下使用这些符号
+szPMMessage		equ	_szPMMessage	- $$
+szMemChkTitle		equ	_szMemChkTitle	- $$
+szRAMSize		equ	_szRAMSize	- $$
+szReturn		equ	_szReturn	- $$
+dwDispPos		equ	_dwDispPos	- $$
+dwMemSize		equ	_dwMemSize	- $$
+dwMCRNumber		equ	_dwMCRNumber	- $$
+ARDStruct		equ	_ARDStruct	- $$
+	dwBaseAddrLow	equ	_dwBaseAddrLow	- $$
+	dwBaseAddrHigh	equ	_dwBaseAddrHigh	- $$
+	dwLengthLow	equ	_dwLengthLow	- $$
+	dwLengthHigh	equ	_dwLengthHigh	- $$
+	dwType		equ	_dwType		- $$
+MemChkBuf		equ	_MemChkBuf	- $$
+
+DataLen			equ	$ - LABEL_DATA
 
 
 
