@@ -17,10 +17,10 @@ LABEL_DESC_STACK:   Descriptor 0,       TopOfStack,     DA_DRWA+DA_32
 ; 显存首地址-文本模式（数据段）
 LABEL_DESC_VIDEO:   Descriptor 0xb8000, 0xffff,         DA_DRW+DA_DPL3
 
-;Page Directory
-LABEL_DESC_PAGE_DIR:Descriptor PageDirBase, 4095,		DA_DRW
-;Page Tables
-LABEL_DESC_PAGE_TBL:Descriptor PageTblBase, 1023,		DA_DRW|DA_LIMIT_4K
+; 0~4G
+LABEL_DESC_FLAT_C:  Descriptor 0,        0fffffh, DA_CR|DA_32|DA_LIMIT_4K
+; 0~4G
+LABEL_DESC_FLAT_RW: Descriptor 0,        0fffffh, DA_DRW|DA_LIMIT_4K
 
 GdtLen	equ	$ - LABEL_GDT	; GDT长度
 GdtPtr	dw	GdtLen - 1		; GDT界限
@@ -33,8 +33,9 @@ SelectorCode16		equ LABEL_DESC_CODE16   - LABEL_GDT
 SelectorData		equ LABEL_DESC_DATA	    - LABEL_GDT
 SelectorStack		equ LABEL_DESC_STACK    - LABEL_GDT
 SelectorVideo       equ LABEL_DESC_VIDEO    - LABEL_GDT
-SelectorPageDir		equ	LABEL_DESC_PAGE_DIR	- LABEL_GDT
-SelectorPageTbl		equ	LABEL_DESC_PAGE_TBL	- LABEL_GDT
+
+SelectorFlatC		equ	LABEL_DESC_FLAT_C	- LABEL_GDT
+SelectorFlatRW		equ	LABEL_DESC_FLAT_RW	- LABEL_GDT
 
 
 
@@ -60,6 +61,7 @@ _ARDStruct:			; Address Range Descriptor Structure
 	_dwLengthLow:		dd	0
 	_dwLengthHigh:		dd	0
 	_dwType:		dd	0
+_PageTableNumber		dd	0
 
 _MemChkBuf:	times	256	db	0
 
@@ -78,6 +80,7 @@ ARDStruct		equ	_ARDStruct	- $$
 	dwLengthHigh	equ	_dwLengthHigh	- $$
 	dwType		equ	_dwType		- $$
 MemChkBuf		equ	_MemChkBuf	- $$
+PageTableNumber		equ	_PageTableNumber- $$
 
 DataLen			equ	$ - LABEL_DATA
 
