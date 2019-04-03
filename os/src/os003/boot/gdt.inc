@@ -5,17 +5,17 @@ LABEL_GDT:          Descriptor 0,		0,              0
 ; Normal 描述符
 LABEL_DESC_NORMAL:  Descriptor 0,       0xffff,         DA_DRW
 ; 非一致代码段 (32位)
-LABEL_DESC_CODE32:  Descriptor 0,       SegCode32Len-1, DA_C+DA_32
+LABEL_DESC_CODE32:  Descriptor 0,       SegCode32Len-1, DA_CR|DA_32
 ; 非一致代码段 (16位)
 LABEL_DESC_CODE16:  Descriptor 0,       0ffffh,         DA_C
 
 ; Data数据段
 LABEL_DESC_DATA:    Descriptor 0,       DataLen-1,      DA_DRW
 ; Stack 全局堆栈段 (32位)
-LABEL_DESC_STACK:   Descriptor 0,       TopOfStack,     DA_DRWA+DA_32
+LABEL_DESC_STACK:   Descriptor 0,       TopOfStack,     DA_DRWA|DA_32
 
 ; 显存首地址-文本模式（数据段）
-LABEL_DESC_VIDEO:   Descriptor 0xb8000, 0xffff,         DA_DRW+DA_DPL3
+LABEL_DESC_VIDEO:   Descriptor 0xb8000, 0xffff,         DA_DRW|DA_DPL3
 
 ; 0~4G
 LABEL_DESC_FLAT_C:  Descriptor 0,        0fffffh, DA_CR|DA_32|DA_LIMIT_4K

@@ -77,6 +77,7 @@ LoopHLT
 
 
 ; 32 位代码段. 由实模式跳入.
+[SECTION .s32]
 [BITS	32]
 LABEL_SEG_CODE32:
 	; 数据段选择子
@@ -101,8 +102,8 @@ LABEL_SEG_CODE32:
 	add	esp, 4
 
 	call	DispMemSize		; 显示内存信息
-	;call	Main
-	call SetupPaging
+	;call SetupPaging
+	call	Main
 
 	; 到此停止
 	jmp	SelectorCode16:0
