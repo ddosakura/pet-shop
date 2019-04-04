@@ -340,9 +340,40 @@ PG_USU		EQU	4	; U/S 属性位值, 用户级
 	lgdt [%2]
 %endmacro
 
-%macro EnableA20 0
-	; 关中断 (cli关闭所有中断，sti打开所有中断)
+; LoadIDT LABEL_IDT, IdtPtr
+%macro LoadIDT 2
+	xor eax, eax
+	mov ax, ds
+	shl eax, 4
+	add eax, %1		; eax <- idt 基地址
+	mov dword [%2 + 2], eax	; [IdtPtr + 2] <- idt 基地址
+	; 关中断
 	cli
+	; 加载 IDTR
+	lidt	[IdtPtr]
+%endmacro
+
+; LoadIDT_v2 LABEL_IDT, IdtPtr
+%macro LoadIDT_v2 2
+	xor eax, eax
+	mov ax, ds
+	shl eax, 4
+	add eax, %1		; eax <- idt 基地址
+	mov dword [%2 + 2], eax	; [IdtPtr + 2] <- idt 基地址
+
+	; 保存 IDTR
+	sidt	[_SavedIDTR]
+	; 保存中断屏蔽寄存器(IMREG)值
+	in	al, 21h
+	mov	[_SavedIMREG], al
+	; 关中断
+	;cli
+
+	; 加载 IDTR
+	lidt	[IdtPtr]
+%endmacro
+
+%macro EnableA20 0
 	; 打开地址线 A20 最简单的方法，与一些硬件可能会发生冲突
 	; https://www.xuebuyuan.com/1042292.html
 	in	al, 0x92
@@ -355,8 +386,6 @@ PG_USU		EQU	4	; U/S 属性位值, 用户级
 	in	al, 0x92
 	and	al, 11111101b
 	out	0x92, al
-	; 开中断
-	sti
 %endmacro
 
 %macro LoopHLT 0

@@ -51,8 +51,11 @@ InitGDT LABEL_DATA, LABEL_DESC_DATA
 ; 初始化堆栈段描述符
 InitGDT LABEL_STACK, LABEL_DESC_STACK
 
-; 为加载 GDTR 作准备 & 加载 GDTR & 关中断 & 打开 A20
+; 为加载 GDTR 作准备 & 加载 GDTR
 LoadGDT LABEL_GDT, GdtPtr
+; 为加载 IDTR 作准备 & 加载 IDTR
+LoadIDT_v2 LABEL_IDT, IdtPtr
+; 打开 A20
 EnableA20
 
 ; 准备切换到保护模式
@@ -71,7 +74,14 @@ mov		ds, ax
 mov		es, ax
 mov		ss, ax
 mov		sp, [_wSPValueInRealMode]
+
+lidt	[_SavedIDTR]	; 恢复 IDTR 的原值
+mov	al, [_SavedIMREG]	; ┓恢复中断屏蔽寄存器(IMREG)的原值
+out	21h, al			; ┛
+
 DisableA20
+; 开中断
+sti
 LoopHLT
 
 
@@ -92,6 +102,9 @@ LABEL_SEG_CODE32:
 	mov	ss, ax
 	mov	esp, TopOfStack
 
+	call Init8259A
+	int	0x80
+
 	; 下面显示一个字符串
 	push	szPMMessage
 	call	DispStr
@@ -105,9 +118,100 @@ LABEL_SEG_CODE32:
 	;call SetupPaging
 	call	Main
 
+	sti
+	jmp	$
+
 	; 到此停止
 	jmp	SelectorCode16:0
 
+Init8259A:
+	mov	al, 011h
+	out	020h, al	; 主8259, ICW1.
+	call	io_delay
+
+	out	0A0h, al	; 从8259, ICW1.
+	call	io_delay
+
+	mov	al, 020h	; IRQ0 对应中断向量 0x20
+	out	021h, al	; 主8259, ICW2.
+	call	io_delay
+
+	mov	al, 028h	; IRQ8 对应中断向量 0x28
+	out	0A1h, al	; 从8259, ICW2.
+	call	io_delay
+
+	mov	al, 004h	; IR2 对应从8259
+	out	021h, al	; 主8259, ICW3.
+	call	io_delay
+
+	mov	al, 002h	; 对应主8259的 IR2
+	out	0A1h, al	; 从8259, ICW3.
+	call	io_delay
+
+	mov	al, 001h
+	out	021h, al	; 主8259, ICW4.
+	call	io_delay
+
+	out	0A1h, al	; 从8259, ICW4.
+	call	io_delay
+
+	mov	al, 11111110b	; 仅仅开启定时器中断
+	;mov	al, 11111111b	; 屏蔽主8259所有中断
+	out	021h, al	; 主8259, OCW1.
+	call	io_delay
+
+	mov	al, 11111111b	; 屏蔽从8259所有中断
+	out	0A1h, al	; 从8259, OCW1.
+	call	io_delay
+
+	ret
+
+SetRealmode8259A:
+	mov	ax, SelectorData
+	mov	fs, ax
+
+	mov	al, 017h
+	out	020h, al	; 主8259, ICW1.
+	call	io_delay
+
+	mov	al, 008h	; IRQ0 对应中断向量 0x8
+	out	021h, al	; 主8259, ICW2.
+	call	io_delay
+
+	mov	al, 001h
+	out	021h, al	; 主8259, ICW4.
+	call	io_delay
+
+	mov	al, [fs:SavedIMREG]	; ┓恢复中断屏蔽寄存器(IMREG)的原值
+	out	021h, al		; ┛
+	call	io_delay
+
+	ret
+
+io_delay:
+	nop
+	nop
+	nop
+	nop
+	ret
+
+_ClockHandler:
+ClockHandler	equ	_ClockHandler - $$
+	inc	byte [gs:((80 * 1 + 0) * 2)]	; 屏幕第 1 行, 第 0 列。
+	mov	al, 20h
+	out	20h, al				; 发送 EOI
+	iretd
+
+_UserIntHandler:
+UserIntHandler	equ	_UserIntHandler - $$
+	printC 0, 1, 'I'
+	iretd
+
+_SpuriousHandler:
+SpuriousHandler	equ	_SpuriousHandler - $$
+	printC 0, 0, '!'
+	jmp	$
+	iretd
 
 ; 启动分页机制
 SetupPaging:
@@ -354,3 +458,4 @@ Code16Len	equ	$-LABEL_SEG_CODE16
 
 %include	"gdt.inc"
 %include	"page.inc"
+%include	"idt.inc"

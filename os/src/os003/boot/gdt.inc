@@ -61,8 +61,10 @@ _ARDStruct:			; Address Range Descriptor Structure
 	_dwLengthLow:		dd	0
 	_dwLengthHigh:		dd	0
 	_dwType:		dd	0
-_PageTableNumber		dd	0
-
+_PageTableNumber:		dd	0
+_SavedIDTR:			dd	0	; 用于保存 IDTR
+				dd	0
+_SavedIMREG:			db	0	; 中断屏蔽寄存器值
 _MemChkBuf:	times	256	db	0
 
 ; 保护模式下使用这些符号
@@ -80,6 +82,8 @@ ARDStruct		equ	_ARDStruct	- $$
 	dwLengthHigh	equ	_dwLengthHigh	- $$
 	dwType		equ	_dwType		- $$
 MemChkBuf		equ	_MemChkBuf	- $$
+SavedIDTR		equ	_SavedIDTR	- $$
+SavedIMREG		equ	_SavedIMREG	- $$
 PageTableNumber		equ	_PageTableNumber- $$
 
 DataLen			equ	$ - LABEL_DATA
