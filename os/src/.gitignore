@@ -3,6 +3,7 @@
 *.log
 *.lst
 *.tmp
+*.out
 
 # llvm 的产物（包括AT&T汇编）
 *.ll
