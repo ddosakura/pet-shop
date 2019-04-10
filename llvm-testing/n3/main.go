@@ -98,17 +98,19 @@ var (
 func partFoo() {
 	b := fooF.NewBlock("")
 
-	// param.a
+	// v3 = param.a
 	v3 := b.NewAlloca(types.I64)
 	b.NewStore(fooP, v3)
-	// local.b
+
+	// v2 = { v4 }
 	v2 := b.NewAlloca(anon)
 	v4 := b.NewGetElementPtr(v2, zero, zero)
 
-	// a
+	// v4 <- v3
 	v5 := b.NewLoad(v3)
 	b.NewStore(v5, v4)
-	// b
+
+	// v7 = v2
 	v6 := b.NewGetElementPtr(v2, zero, zero)
 	v7 := b.NewLoad(v6)
 
