@@ -5,14 +5,24 @@ import (
 
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
+	"github.com/llir/llvm/ir/enum"
 	"github.com/llir/llvm/ir/types"
 	"github.com/llir/llvm/ir/value"
 )
 
 var (
-	m = ir.NewModule()
+	m    = ir.NewModule()
+	zero = constant.NewInt(types.I32, 0)
+	num0 = constant.NewInt(types.I64, 0)
 
-	zero   = constant.NewInt(types.I32, 0)
+	n3   = constant.NewInt(types.I32, 3)
+	n4   = constant.NewInt(types.I32, 4)
+	n6   = constant.NewInt(types.I32, 6)
+	n7   = constant.NewInt(types.I32, 7)
+	n9   = constant.NewInt(types.I32, 9)
+	n100 = constant.NewInt(types.I32, 100)
+
+	num3   = constant.NewInt(types.I64, 3)
 	num4   = constant.NewInt(types.I64, 4)
 	num6   = constant.NewInt(types.I64, 6)
 	num7   = constant.NewInt(types.I64, 7)
@@ -33,7 +43,7 @@ var (
 func main() {
 	mainF := m.NewFunc("main", types.I32)
 	b := mainF.NewBlock("")
-	b.NewCall(fooF, num4)
+	partMain(b)
 	b.NewRet(zero)
 
 	ioutil.WriteFile("main.ll", []byte(m.String()), 0644)
@@ -58,46 +68,81 @@ var (
 )
 
 func partBar() {
+	barF.Visibility = enum.VisibilityHidden
 	b := barF.NewBlock("")
 
-	vA := b.NewAlloca(anonPtr)
-	b.NewStore(barPA, vA)
-	vB := b.NewAlloca(types.I64)
-	b.NewStore(barPB, vB)
+	// ctx.a
+	v3 := b.NewAlloca(anonPtr)
+	b.NewStore(barPA, v3)
+	// param.b
+	v4 := b.NewAlloca(types.I64)
+	b.NewStore(barPB, v4)
 
-	vC := b.NewLoad(vA)
-	vD := b.NewGetElementPtr(vC, zero, zero)
-
-	vE := b.NewLoad(vD)
-	vF := b.NewLoad(vB)
-	vRet := b.NewAdd(vE, vF)
+	// a
+	v5 := b.NewLoad(v3)
+	v6 := b.NewGetElementPtr(v5, zero, zero)
+	v7 := b.NewLoad(v6)
+	// b
+	v8 := b.NewLoad(v4)
+	// +
+	vRet := b.NewAdd(v7, v8)
 
 	b.NewRet(vRet)
 }
 
 var (
 	fooP = ir.NewParam("", types.I64)
-	fooF = m.NewFunc("foo", types.Void, fooP)
+	fooF = m.NewFunc("foo", types.I64, fooP)
 )
 
 func partFoo() {
 	b := fooF.NewBlock("")
 
-	vA := b.NewAlloca(types.I64)
-	b.NewStore(fooP, vA)
+	// param.a
+	v3 := b.NewAlloca(types.I64)
+	b.NewStore(fooP, v3)
+	// local.b
+	v2 := b.NewAlloca(anon)
+	v4 := b.NewGetElementPtr(v2, zero, zero)
 
-	// auto fun = [=](int b)->int {return a+b;};
-	vS := b.NewAlloca(anon)
-	vB := b.NewAlloca(types.I64)
-	fooPtr := b.NewGetElementPtr(vS, zero, zero)
-	fooTmp := b.NewLoad(vA)
-	b.NewStore(fooTmp, fooPtr)
+	// a
+	v5 := b.NewLoad(v3)
+	b.NewStore(v5, v4)
+	// b
+	v6 := b.NewGetElementPtr(v2, zero, zero)
+	v7 := b.NewLoad(v6)
 
-	// int c = fun(100);
-	vC := b.NewCall(barF, vS, num6)
-	b.NewStore(vC, vB)
-	vD := b.NewLoad(vB)
-	p(b, vD)
+	b.NewRet(v7)
+}
 
-	b.NewRet(nil)
+func partMain(b *ir.Block) {
+	// num.0
+	//v1 := b.NewAlloca(types.I64)
+	//b.NewStore(num0, v1)
+	partMainA(b)
+	partMainB(b)
+}
+
+func partMainA(b *ir.Block) {
+	// foo(4)
+	v4 := b.NewCall(fooF, num4)
+	// v2 = { v4 }
+	v2 := b.NewAlloca(anon)
+	v5 := b.NewGetElementPtr(v2, zero, zero)
+	b.NewStore(v4, v5)
+	v6 := b.NewCall(barF, v2, num6)
+	// print
+	p(b, v6)
+}
+
+func partMainB(b *ir.Block) {
+	// foo(3)
+	v8 := b.NewCall(fooF, num3)
+	// v3 = { v8 }
+	v3 := b.NewAlloca(anon)
+	v9 := b.NewGetElementPtr(v3, zero, zero)
+	b.NewStore(v8, v9)
+	v10 := b.NewCall(barF, v3, num7)
+	// print
+	p(b, v10)
 }

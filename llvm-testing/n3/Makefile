@@ -44,4 +44,7 @@ main.out: main.o
 # 	llc main.bc -o main.x86.s -mtriple=x86
 
 clean:
-	rm *.bc *.ll *.o *.out *.s
+	rm *.bc *.ll *.o *.out *.s *.asm
+
+debug:
+	llc main.bc -o main.asm --x86-asm-syntax=intel

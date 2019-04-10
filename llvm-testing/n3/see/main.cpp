@@ -3,7 +3,7 @@
 
 // see: https://www.cnblogs.com/Braveliu/p/4231818.html
 
-# include<cstdio>
+#include<cstdio>
 
 int main() {
     // int a = 20, b = 10;
