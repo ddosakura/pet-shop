@@ -13,8 +13,9 @@ import (
 var (
 	m    = ir.NewModule()
 	zero = constant.NewInt(types.I32, 0)
-	num0 = constant.NewInt(types.I64, 0)
 
+	n0   = constant.NewInt(types.I32, 0)
+	n1   = constant.NewInt(types.I32, 1)
 	n3   = constant.NewInt(types.I32, 3)
 	n4   = constant.NewInt(types.I32, 4)
 	n6   = constant.NewInt(types.I32, 6)
@@ -22,6 +23,8 @@ var (
 	n9   = constant.NewInt(types.I32, 9)
 	n100 = constant.NewInt(types.I32, 100)
 
+	num0   = constant.NewInt(types.I64, 0)
+	num1   = constant.NewInt(types.I64, 1)
 	num3   = constant.NewInt(types.I64, 3)
 	num4   = constant.NewInt(types.I64, 4)
 	num6   = constant.NewInt(types.I64, 6)
@@ -36,7 +39,7 @@ var (
 
 	pf = m.NewFunc("printf", types.I32, ir.NewParam("", types.I8Ptr))
 
-	anon    = m.NewTypeDef("class.anon", types.NewStruct(types.I64))
+	anon    = m.NewTypeDef("class.anon", types.NewStruct(types.I64, types.I64))
 	anonPtr = types.NewPointer(anon)
 )
 
@@ -63,88 +66,86 @@ func p(b *ir.Block, v value.Value) {
 
 var (
 	barPA = ir.NewParam("", anonPtr)
-	barPB = ir.NewParam("", types.I64)
-	barF  = m.NewFunc("bar", types.I64, barPA, barPB)
+	barP1 = ir.NewParam("", types.I64)
+	barP2 = ir.NewParam("", types.I64)
+	barF  = m.NewFunc("bar", types.I64, barPA, barP1, barP2)
 )
 
 func partBar() {
 	barF.Visibility = enum.VisibilityHidden
 	b := barF.NewBlock("")
 
+	// param.b1
+	v5 := b.NewAlloca(types.I64)
+	b.NewStore(barP1, v5)
+	// param.b2
+	v6 := b.NewAlloca(types.I64)
+	b.NewStore(barP2, v6)
+
 	// ctx.a
-	v3 := b.NewAlloca(anonPtr)
-	b.NewStore(barPA, v3)
-	// param.b
-	v4 := b.NewAlloca(types.I64)
-	b.NewStore(barPB, v4)
+	v4 := b.NewAlloca(anonPtr)
+	b.NewStore(barPA, v4)
+	v7 := b.NewLoad(v4)
+	// a1
+	v8 := b.NewGetElementPtr(v7, n0, n0)
+	v9 := b.NewLoad(v8)
+	// b1 += a1
+	v10 := b.NewLoad(v5)
+	v11 := b.NewAdd(v9, v10)
+	// a2
+	v12 := b.NewGetElementPtr(v7, n0, n1)
+	v13 := b.NewLoad(v12)
+	// b2 += a2
+	v14 := b.NewLoad(v6)
+	v15 := b.NewAdd(v13, v14)
+	// *
+	v16 := b.NewMul(v11, v15)
 
-	// a
-	v5 := b.NewLoad(v3)
-	v6 := b.NewGetElementPtr(v5, zero, zero)
-	v7 := b.NewLoad(v6)
-	// b
-	v8 := b.NewLoad(v4)
-	// +
-	vRet := b.NewAdd(v7, v8)
-
-	b.NewRet(vRet)
+	b.NewRet(v16)
 }
 
 var (
-	fooP = ir.NewParam("", types.I64)
-	fooF = m.NewFunc("foo", types.I64, fooP)
+	fooP1 = ir.NewParam("", types.I64)
+	fooP2 = ir.NewParam("", types.I64)
+	fooF  = m.NewFunc("foo", types.I128, fooP1, fooP2)
 )
 
 func partFoo() {
 	b := fooF.NewBlock("")
 
-	// v3 = param.a
-	v3 := b.NewAlloca(types.I64)
-	b.NewStore(fooP, v3)
+	// v4 = param.a1
+	v4 := b.NewAlloca(types.I64)
+	b.NewStore(fooP1, v4)
+	// v5 = param.a2
+	v5 := b.NewAlloca(types.I64)
+	b.NewStore(fooP2, v5)
 
-	// v2 = { v4 }
-	v2 := b.NewAlloca(anon)
-	v4 := b.NewGetElementPtr(v2, zero, zero)
+	// v3 = { v4, v5 }
+	v3 := b.NewAlloca(anon)
+	v6 := b.NewGetElementPtr(v3, n0, n0)
+	v7 := b.NewLoad(v4)
+	b.NewStore(v7, v6)
+	v8 := b.NewGetElementPtr(v3, n0, n1)
+	v9 := b.NewLoad(v5)
+	b.NewStore(v9, v8)
 
-	// v4 <- v3
-	v5 := b.NewLoad(v3)
-	b.NewStore(v5, v4)
+	v10 := b.NewBitCast(v3, types.I128Ptr)
+	v11 := b.NewLoad(v10)
 
-	// v7 = v2
-	v6 := b.NewGetElementPtr(v2, zero, zero)
-	v7 := b.NewLoad(v6)
-
-	b.NewRet(v7)
+	b.NewRet(v11)
 }
 
 func partMain(b *ir.Block) {
-	// num.0
-	//v1 := b.NewAlloca(types.I64)
-	//b.NewStore(num0, v1)
-	partMainA(b)
-	partMainB(b)
-}
-
-func partMainA(b *ir.Block) {
-	// foo(4)
-	v4 := b.NewCall(fooF, num4)
-	// v2 = { v4 }
+	// foo(4, 3)
+	v3 := b.NewCall(fooF, num4, num3)
+	// v2 = { v3... }
 	v2 := b.NewAlloca(anon)
-	v5 := b.NewGetElementPtr(v2, zero, zero)
-	b.NewStore(v4, v5)
-	v6 := b.NewCall(barF, v2, num6)
-	// print
-	p(b, v6)
-}
+	v4 := b.NewBitCast(v2, types.I128Ptr)
+	b.NewStore(v3, v4)
 
-func partMainB(b *ir.Block) {
-	// foo(3)
-	v8 := b.NewCall(fooF, num3)
-	// v3 = { v8 }
-	v3 := b.NewAlloca(anon)
-	v9 := b.NewGetElementPtr(v3, zero, zero)
-	b.NewStore(v8, v9)
-	v10 := b.NewCall(barF, v3, num7)
+	// bar(ctx.v2, 6, 7)
+	v5 := b.NewCall(barF, v2, num6, num7)
+
 	// print
-	p(b, v10)
+	p(b, v5)
 }
