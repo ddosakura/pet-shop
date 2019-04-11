@@ -82,6 +82,24 @@ func partBar() {
 	v6 := b.NewAlloca(types.I64)
 	b.NewStore(barP2, v6)
 
+	p(b, barPA)
+	//V4 := b.NewAlloca(anonPtr)
+	//b.NewStore(barPA, V4)
+	//V7 := b.NewLoad(V4)
+	//V77 := b.NewLoad(V7)
+	//V777 := b.NewAlloca(anon)
+	//b.NewStore(V77, V777)
+	// a1
+	V8 := b.NewExtractValue(barPA, 0, 0)
+	//	V9 := b.NewLoad(V8)
+	p(b, V8)
+	//	p(b, V9)
+	// a2
+	V12 := b.NewExtractValue(barPA, 0, 1)
+	//	V13 := b.NewLoad(V12)
+	p(b, V12)
+	//	p(b, V13)
+
 	// ctx.a
 	v4 := b.NewAlloca(anonPtr)
 	b.NewStore(barPA, v4)
@@ -92,12 +110,18 @@ func partBar() {
 	// b1 += a1
 	v10 := b.NewLoad(v5)
 	v11 := b.NewAdd(v9, v10)
+	p(b, v9)
+	p(b, v10)
+	p(b, v11)
 	// a2
 	v12 := b.NewGetElementPtr(v7, n0, n1)
 	v13 := b.NewLoad(v12)
 	// b2 += a2
 	v14 := b.NewLoad(v6)
 	v15 := b.NewAdd(v13, v14)
+	p(b, v13)
+	p(b, v14)
+	p(b, v15)
 	// *
 	v16 := b.NewMul(v11, v15)
 
@@ -107,7 +131,7 @@ func partBar() {
 var (
 	fooP1 = ir.NewParam("", types.I64)
 	fooP2 = ir.NewParam("", types.I64)
-	fooF  = m.NewFunc("foo", types.I128, fooP1, fooP2)
+	fooF  = m.NewFunc("foo", anonPtr, fooP1, fooP2)
 )
 
 func partFoo() {
@@ -129,22 +153,29 @@ func partFoo() {
 	v9 := b.NewLoad(v5)
 	b.NewStore(v9, v8)
 
-	v10 := b.NewBitCast(v3, types.I128Ptr)
-	v11 := b.NewLoad(v10)
-
-	b.NewRet(v11)
+	b.NewRet(v3)
 }
 
 func partMain(b *ir.Block) {
 	// foo(4, 3)
 	v3 := b.NewCall(fooF, num4, num3)
-	// v2 = { v3... }
+	p(b, v3)
+	// a1
+	V8 := b.NewGetElementPtr(v3, n0, n0)
+	V9 := b.NewLoad(V8)
+	p(b, V8)
+	p(b, V9)
+	// a2
+	V12 := b.NewGetElementPtr(v3, n0, n1)
+	V13 := b.NewLoad(V12)
+	p(b, V12)
+	p(b, V13)
+
 	v2 := b.NewAlloca(anon)
-	v4 := b.NewBitCast(v2, types.I128Ptr)
-	b.NewStore(v3, v4)
+	v4 := b.NewBitCast(v2, anonPtr)
 
 	// bar(ctx.v2, 6, 7)
-	v5 := b.NewCall(barF, v2, num6, num7)
+	v5 := b.NewCall(barF, v4, num6, num7)
 
 	// print
 	p(b, v5)
